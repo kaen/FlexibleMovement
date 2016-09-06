@@ -1,0 +1,14 @@
+{
+    "id" : "FlexibleMovement",
+    "version" : "0.1.0-SNAPSHOT",
+    "author" : "",
+    "displayName" : "FlexibleMovement",
+    "description" : "",
+    "dependencies" : [
+        {
+            "id" : "FlexiblePathfinding",
+            "minVersion" : "0.1.0"
+        }
+    ],
+    "serverSideOnly" : false
+}
