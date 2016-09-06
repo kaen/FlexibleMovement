@@ -22,6 +22,7 @@ import org.terasology.logic.behavior.tree.Actor;
 import org.terasology.logic.behavior.tree.Interpreter;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.location.LocationComponent;
+import org.terasology.registry.CoreRegistry;
 
 public class FlexibleMovementNodeTest {
     protected boolean done;
@@ -29,6 +30,7 @@ public class FlexibleMovementNodeTest {
     protected CharacterMovementComponent characterMovementComponent;
     protected FlexibleMovementComponent flexibleMovementComponent;
     protected Interpreter interpreter;
+    FlexibleMovementSystem flexibleMovementSystem;
     private WorldProvidingHeadlessEnvironment env;
     private Actor actor;
     private EntityManager entityManager;
@@ -42,6 +44,8 @@ public class FlexibleMovementNodeTest {
                 "XXXXX|XXXXX|XXXXX|XXXXX",
                 "XXXXX|XXXXX|XXXXX|XXXXX"
         }, new String[0]);
+        flexibleMovementSystem = new FlexibleMovementSystem();
+        CoreRegistry.put(FlexibleMovementSystem.class, flexibleMovementSystem);
         locationComponent = new LocationComponent();
         characterMovementComponent = new CharacterMovementComponent();
         flexibleMovementComponent = new FlexibleMovementComponent();

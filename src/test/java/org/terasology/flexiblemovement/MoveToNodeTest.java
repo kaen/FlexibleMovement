@@ -63,6 +63,7 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
         done = false;
         Task task = interpreter.start(moveToNode);
         Assert.assertEquals(Status.RUNNING, task.update(0));
+        flexibleMovementSystem.update(0);
         Assert.assertEquals(MovementMode.WALKING, characterMovementComponent.mode);
         Assert.assertTrue(done);
 
@@ -70,6 +71,7 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
         done = false;
         locationComponent.setWorldPosition(new Vector3f(0.5f,0.5f,1.5f));
         Assert.assertEquals(Status.SUCCESS, task.update(0));
+        flexibleMovementSystem.update(0);
         Assert.assertFalse(done);
     }
 
@@ -94,17 +96,17 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
         eventSystem.registerEventReceiver(testEventReceiver, CharacterMoveInputEvent.class);
 
         // ensure we move in the right direction
-        done = false;
+        done = true;
         Task task = interpreter.start(moveToNode);
-        interpreter.tick(0);
-        while(Status.RUNNING == task.getStatus()) {
+        do {
             Assert.assertTrue(done);
             done = false;
             interpreter.tick(0);
+            flexibleMovementSystem.update(0);
             Assert.assertEquals(MovementMode.FLYING, characterMovementComponent.mode);
-        }
+        } while(Status.RUNNING == task.getStatus());
 
         Assert.assertEquals(Status.SUCCESS, task.getStatus());
-        Assert.assertTrue(flexibleMovementComponent.target.toVector3f().add(0.5f,0.5f,0.5f).distance(locationComponent.getWorldPosition()) < 0.1);
+        Assert.assertTrue(flexibleMovementComponent.target.toVector3f().add(0.5f,0.5f,0.5f).distance(locationComponent.getWorldPosition()) < 0.5);
     }
 }
