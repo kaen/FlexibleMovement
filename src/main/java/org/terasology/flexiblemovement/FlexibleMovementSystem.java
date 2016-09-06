@@ -18,8 +18,10 @@ package org.terasology.flexiblemovement;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.*;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
+import org.terasology.logic.characters.events.HorizontalCollisionEvent;
 import org.terasology.registry.Share;
 
 import java.util.Map;
@@ -38,6 +40,15 @@ public class FlexibleMovementSystem extends BaseComponentSystem implements Updat
             }
         }
         eventQueue.clear();
+    }
+
+    @ReceiveEvent
+    public void markHorizontalCollision(HorizontalCollisionEvent event, EntityRef entity, FlexibleMovementComponent flexibleMovementComponent) {
+        if(flexibleMovementComponent == null) {
+            return;
+        }
+
+        flexibleMovementComponent.collidedHorizontally = true;
     }
 
     public void enqueue(EntityRef entity, CharacterMoveInputEvent event) {

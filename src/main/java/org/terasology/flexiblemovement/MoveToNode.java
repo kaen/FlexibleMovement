@@ -66,6 +66,9 @@ public class MoveToNode extends Node{
                 flexibleMovementSystem.enqueue(actor().getEntity(), result);
             }
 
+            flexibleMovementComponent.collidedHorizontally = false;
+            actor().getEntity().saveComponent(flexibleMovementComponent);
+
             return result == null ? Status.FAILURE : Status.RUNNING;
         }
 

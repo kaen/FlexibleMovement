@@ -55,12 +55,11 @@ public class WalkingMovementPlugin extends MovementPlugin {
         }
 
         float yaw = (float) Math.atan2(velocity.x, velocity.z);
-//        boolean shouldJump = location.getWorldPosition().distance(lastPos) < 0.3;
-//        lastPos.set(location.getWorldPosition());
         if(movement.mode != MovementMode.WALKING) {
-            entity.send(new SetMovementModeEvent(MovementMode.WALKING));
+            movement.mode = MovementMode.WALKING;
+            entity.saveComponent(movement);
         }
 
-        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, true, time.getGameDeltaInMs());
+        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, flexibleMovementComponent.collidedHorizontally, time.getGameDeltaInMs());
     }
 }

@@ -32,10 +32,11 @@ public final class FlexibleMovementComponent implements Component {
     public int pathIndex = 0;
     public Vector3i pathTarget = Vector3i.zero();
     public List<String> movementTypes = Lists.newArrayList("walking", "jumping");
+    public boolean collidedHorizontally;
 
     public MovementPlugin getMovementPlugin(WorldProvider world, Time time) {
         // TODO: registry system for these
-        if(movementTypes.get(0).toLowerCase() == "flying") {
+        if(movementTypes.get(0).equalsIgnoreCase("flying")) {
             return new FlyingMovementPlugin(world, time);
         }
         return new WalkingMovementPlugin(world, time);

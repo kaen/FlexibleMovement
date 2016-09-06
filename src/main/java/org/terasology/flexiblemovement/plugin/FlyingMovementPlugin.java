@@ -31,8 +31,6 @@ import org.terasology.registry.Share;
 import org.terasology.world.WorldProvider;
 
 public class FlyingMovementPlugin extends MovementPlugin {
-    private Vector3f lastPos = new Vector3f();
-
     public FlyingMovementPlugin(WorldProvider world, Time time) {
         super(world, time);
     }
@@ -52,17 +50,16 @@ public class FlyingMovementPlugin extends MovementPlugin {
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
         Vector3f velocity = new Vector3f(dest).sub(location.getWorldPosition());
+        velocity.y += 0.1f; // a little nudge to stay airborn
         if(velocity.lengthSquared() > 1.0f) {
             velocity.normalize();
         }
 
         float yaw = (float) Math.atan2(velocity.x, velocity.z);
-        float pitch = (float) Math.atan2(velocity.y, Math.atan2(velocity.x, velocity.z));
-        boolean shouldJump = true ; // location.getWorldPosition().distanceSquared(lastPos) < 0.001;
-        if(movement.mode != MovementMode.FLYING) {
-            entity.send(new SetMovementModeEvent(MovementMode.FLYING));
-        }
-        lastPos.set(location.getWorldPosition());
-        return new CharacterMoveInputEvent(sequence, pitch * TeraMath.RAD_TO_DEG + 180, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, shouldJump, time.getGameDeltaInMs());
+        float pitch = (float) Math.atan2(velocity.y, Math.hypot(velocity.x, velocity.z));
+        movement.mode = MovementMode.FLYING;
+        movement.grounded = false;
+        entity.saveComponent(movement);
+        return new CharacterMoveInputEvent(sequence, pitch * TeraMath.RAD_TO_DEG + 180, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, true, time.getGameDeltaInMs());
     }
 }
