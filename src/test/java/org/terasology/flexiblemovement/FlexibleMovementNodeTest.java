@@ -30,10 +30,10 @@ public class FlexibleMovementNodeTest {
     protected CharacterMovementComponent characterMovementComponent;
     protected FlexibleMovementComponent flexibleMovementComponent;
     protected Interpreter interpreter;
-    FlexibleMovementSystem flexibleMovementSystem;
-    private WorldProvidingHeadlessEnvironment env;
-    private Actor actor;
-    private EntityManager entityManager;
+    protected FlexibleMovementSystem flexibleMovementSystem;
+    protected WorldProvidingHeadlessEnvironment env;
+    protected Actor actor;
+    protected EntityManager entityManager;
 
     @Before
     public void setup() {

@@ -17,15 +17,9 @@ package org.terasology.flexiblemovement;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.internal.EventReceiver;
-import org.terasology.entitySystem.event.internal.EventSystem;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
-import org.terasology.logic.characters.CharacterMoveInputEvent;
-import org.terasology.logic.characters.MovementMode;
-import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.InjectionHelper;
@@ -33,7 +27,7 @@ import org.terasology.registry.InjectionHelper;
 public class FindPathToNodeTest extends FlexibleMovementNodeTest {
     @Test
     public void testFindPathToNodeDefault() {
-        flexibleMovementComponent.pathTarget = new Vector3i(2,0,2);
+        flexibleMovementComponent.pathGoalPosition = new Vector3i(2,0,2);
         CoreRegistry.put(PathfinderSystem.class, new PathfinderSystem());
         FindPathToNode node = new FindPathToNode();
         Task task = interpreter.start(node);
@@ -47,7 +41,7 @@ public class FindPathToNodeTest extends FlexibleMovementNodeTest {
 
     @Test
     public void testFindPathToNodeFailure() {
-        flexibleMovementComponent.pathTarget = new Vector3i(-1,-1,-1);
+        flexibleMovementComponent.pathGoalPosition = new Vector3i(-1,-1,-1);
         CoreRegistry.put(PathfinderSystem.class, new PathfinderSystem());
         FindPathToNode node = new FindPathToNode();
         Task task = interpreter.start(node);
@@ -63,7 +57,7 @@ public class FindPathToNodeTest extends FlexibleMovementNodeTest {
     public void testFindPathToNodeFlying() {
         flexibleMovementComponent.movementTypes.clear();
         flexibleMovementComponent.movementTypes.add("flying");
-        flexibleMovementComponent.pathTarget = new Vector3i(3,3,3);
+        flexibleMovementComponent.pathGoalPosition = new Vector3i(3,3,3);
 
         CoreRegistry.put(PathfinderSystem.class, new PathfinderSystem());
         FindPathToNode node = new FindPathToNode();

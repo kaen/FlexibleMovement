@@ -19,9 +19,17 @@ import org.terasology.logic.behavior.tree.DecoratorNode;
 import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
-import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
 
+/**
+ * Performs a child node along the FlexibleMovementComponent.path
+ *
+ * 1. Sets the FlexibleMovementComponent.target
+ * 2. Runs the child node until SUCCESS/FAILURE
+ * 3. On child SUCCESS, sets target to next path index and starts child again
+ * 4. On child FAILURE, returns FAILURE
+ * 5. When end of path is reached, returns SUCCESS
+ */
 public class MoveAlongPathNode extends DecoratorNode {
     @Override
     public MoveAlongPathTask createTask() {
@@ -73,7 +81,7 @@ public class MoveAlongPathNode extends DecoratorNode {
             movement.path = null;
             movement.target.set(Vector3i.zero());
             movement.pathIndex = 0;
-            movement.pathTarget = null;
+            movement.pathGoalPosition = null;
             actor().save(movement);
         }
     }

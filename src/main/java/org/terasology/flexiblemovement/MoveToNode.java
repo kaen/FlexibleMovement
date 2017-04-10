@@ -33,6 +33,9 @@ import org.terasology.utilities.random.FastRandom;
 import org.terasology.utilities.random.Random;
 import org.terasology.world.WorldProvider;
 
+/**
+ * Uses an actor's MovementPlugin to move it to FlexibleMovementComponent.target
+ */
 public class MoveToNode extends Node {
 
     @Override

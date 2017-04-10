@@ -15,11 +15,8 @@
  */
 package org.terasology.flexiblemovement;
 
-import com.google.common.collect.Lists;
-import org.slf4j.LoggerFactory;
 import org.terasology.engine.Time;
 import org.terasology.flexiblepathfinding.JPSConfig;
-import org.terasology.flexiblepathfinding.LineOfSight3d;
 import org.terasology.flexiblepathfinding.PathfinderCallback;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.logic.behavior.tree.Node;
@@ -27,12 +24,14 @@ import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.world.WorldProvider;
 
 import java.util.List;
 
+/**
+ * Finds a path to the pathGoalPosition of the Actor, stores it in FlexibileMovementComponent.path
+ */
 public class FindPathToNode extends Node {
     @Override
     public FindPathToTask createTask() {
@@ -61,7 +60,11 @@ public class FindPathToNode extends Node {
                 pathStatus = Status.RUNNING;
                 FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
                 Vector3i start = new Vector3i(actor().getComponent(LocationComponent.class).getWorldPosition());
-                Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).pathTarget;
+                Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).pathGoalPosition;
+
+                if (start == null || goal == null) {
+                    return Status.FAILURE;
+                }
 
                 JPSConfig config = new JPSConfig(start, goal);
                 config.useLineOfSight = true;

@@ -15,10 +15,12 @@
  */
 package org.terasology.flexiblemovement;
 
+import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
+import org.terasology.logic.location.Location;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
@@ -27,23 +29,25 @@ import org.terasology.world.WorldProvider;
 import java.util.Arrays;
 
 /**
- * Constructs a dummy two-step path consisting of only the actor's current position and goal position
- * Meant as a cheap fallback when full pathing is not needed or possible
+ * Find the current location of the pathGoalEntity, sets it as pathGoalPosition
+ *
+ * SUCCESS: if entity exists and has a position
+ * FAILURE: otherwise
  */
-public class FindDummyPathToNode extends Node {
+public class UpdatePathGoalPositionNode extends Node {
     @Override
-    public FindDummyPathToTask createTask() {
-        return new FindDummyPathToTask(this);
+    public UpdatePathGoalPositionTask createTask() {
+        return new UpdatePathGoalPositionTask(this);
     }
 
-    public static class FindDummyPathToTask extends Task{
+    public static class UpdatePathGoalPositionTask extends Task{
         @In
         PathfinderSystem system;
 
         @In
         private WorldProvider world;
 
-        protected FindDummyPathToTask(Node node) {
+        protected UpdatePathGoalPositionTask(Node node) {
             super(node);
         }
 
@@ -51,15 +55,18 @@ public class FindDummyPathToNode extends Node {
         public Status update(float dt) {
 
             FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
-            Vector3i start = new Vector3i(actor().getComponent(LocationComponent.class).getWorldPosition());
-            Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).pathGoalPosition;
+            EntityRef entity = movement.pathGoalEntity;
 
-            if(start == null || goal == null) {
+            if (entity == null) {
                 return Status.FAILURE;
             }
 
-            movement.path = Arrays.asList(start, goal);
-            movement.pathIndex = 0;
+            LocationComponent location = entity.getComponent(LocationComponent.class);
+            if (location == null) {
+                return Status.FAILURE;
+            }
+
+            movement.pathGoalPosition.set(new Vector3i(location.getWorldPosition()));
             actor().save(movement);
 
             return Status.SUCCESS;
