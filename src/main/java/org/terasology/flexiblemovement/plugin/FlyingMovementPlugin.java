@@ -63,6 +63,6 @@ public class FlyingMovementPlugin extends MovementPlugin {
             entity.send(new SetMovementModeEvent(MovementMode.FLYING));
         }
         entity.saveComponent(movement);
-        return new CharacterMoveInputEvent(sequence, pitch * TeraMath.RAD_TO_DEG + 180, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, true, time.getGameDeltaInMs());
+        return new CharacterMoveInputEvent(sequence, pitch * TeraMath.RAD_TO_DEG + 180, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, velocity.y > 0, time.getGameDeltaInMs());
     }
 }
