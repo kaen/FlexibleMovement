@@ -26,7 +26,7 @@ import org.terasology.math.geom.Vector3i;
  *
  * 1. Sets the FlexibleMovementComponent.target
  * 2. Runs the child node until SUCCESS/FAILURE
- * 3. On child SUCCESS, sets target to next path index and starts child again
+ * 3. On child SUCCESS, sets target to next waypoint and starts child again
  * 4. On child FAILURE, returns FAILURE
  * 5. When end of path is reached, returns SUCCESS
  */
@@ -48,12 +48,6 @@ public class MoveAlongPathNode extends DecoratorNode {
 
         @Override
         public Status update(float dt) {
-            FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
-            if(movement.path == null || movement.pathIndex >= movement.path.size()) {
-                return Status.FAILURE;
-            }
-            movement.target.set(movement.path.get(movement.pathIndex));
-            actor().save(movement);
             return Status.RUNNING;
         }
 
@@ -61,27 +55,19 @@ public class MoveAlongPathNode extends DecoratorNode {
         public void handle(Status result) {
             FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
             if(result == Status.SUCCESS) {
-                movement.pathIndex++;
-                if(movement.pathIndex >= movement.path.size()) {
-                    clearMovement();
+                movement.advancePath();
+                if(movement.isPathFinished()) {
+                    movement.resetPath();
                     stop(Status.SUCCESS);
-                    return;
+                } else {
+                    start(getChild());
                 }
-                start(getChild());
             }
 
             if(result == Status.FAILURE) {
-                clearMovement();
                 stop(Status.FAILURE);
             }
-        }
 
-        private void clearMovement() {
-            FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
-            movement.path = null;
-            movement.target.set(Vector3i.zero());
-            movement.pathIndex = 0;
-            movement.pathGoalPosition = null;
             actor().save(movement);
         }
     }

@@ -60,7 +60,7 @@ public class FindPathToNode extends Node {
                 pathStatus = Status.RUNNING;
                 FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
                 Vector3i start = new Vector3i(actor().getComponent(LocationComponent.class).getWorldPosition());
-                Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).pathGoalPosition;
+                Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).getPathGoal();
 
                 if (start == null || goal == null) {
                     return Status.FAILURE;
@@ -86,8 +86,12 @@ public class FindPathToNode extends Node {
 
             if(pathStatus == Status.SUCCESS) {
                 FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
-                movement.path = pathResult;
-                movement.pathIndex = 0;
+
+                // PF System returns paths including the starting point.
+                // Since we don't need to move to where we started, we remove the first point in the path
+                pathResult.remove(0);
+
+                movement.setPath(pathResult);
                 actor().save(movement);
             }
 

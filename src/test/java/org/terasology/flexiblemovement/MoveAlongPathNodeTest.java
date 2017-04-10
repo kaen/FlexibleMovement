@@ -55,23 +55,25 @@ public class MoveAlongPathNodeTest extends FlexibleMovementNodeTest {
 
         MoveAlongPathNode moveAlongPathNode = new MoveAlongPathNode();
         moveAlongPathNode.setChild(0, new TestMoveAlongPathNodeChildNode());
-        flexibleMovementComponent.path = Lists.newArrayList(new Vector3i(2,0,2), Vector3i.zero());
+        flexibleMovementComponent.setPath(Lists.newArrayList(new Vector3i(2,0,2), Vector3i.zero()));
+
+        Assert.assertEquals(new Vector3i(2,0,2), flexibleMovementComponent.target);
 
         done = false;
         Task task = interpreter.start(moveAlongPathNode);
         Assert.assertEquals(2, interpreter.tick(0));
+        Assert.assertEquals(Vector3i.zero(), flexibleMovementComponent.target);
         Assert.assertEquals(Status.RUNNING, task.getStatus());
-        Assert.assertEquals(new Vector3i(2,0,2), flexibleMovementComponent.target);
-        Assert.assertEquals(2, flexibleMovementComponent.path.size());
-        Assert.assertEquals(1, flexibleMovementComponent.pathIndex);
+        Assert.assertEquals(2, flexibleMovementComponent.getPath().size());
+        Assert.assertEquals(1, flexibleMovementComponent.getPathIndex());
         Assert.assertTrue(done);
 
         done = false;
         Assert.assertEquals(2, interpreter.tick(0));
         Assert.assertEquals(Status.SUCCESS, task.getStatus());
         Assert.assertEquals(Vector3i.zero(), flexibleMovementComponent.target);
-        Assert.assertEquals(null, flexibleMovementComponent.path);
-        Assert.assertEquals(0, flexibleMovementComponent.pathIndex);
+        Assert.assertEquals(0, flexibleMovementComponent.getPath().size());
+        Assert.assertEquals(0, flexibleMovementComponent.getPathIndex());
         Assert.assertTrue(done);
     }
 }

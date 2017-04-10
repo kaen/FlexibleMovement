@@ -27,7 +27,7 @@ import org.terasology.registry.InjectionHelper;
 public class FindPathToNodeTest extends FlexibleMovementNodeTest {
     @Test
     public void testFindPathToNodeDefault() {
-        flexibleMovementComponent.pathGoalPosition = new Vector3i(2,0,2);
+        flexibleMovementComponent.setPathGoal(new Vector3i(2,0,2));
         CoreRegistry.put(PathfinderSystem.class, new PathfinderSystem());
         FindPathToNode node = new FindPathToNode();
         Task task = interpreter.start(node);
@@ -35,13 +35,13 @@ public class FindPathToNodeTest extends FlexibleMovementNodeTest {
 
         Assert.assertEquals(1, interpreter.tick(0));
         while(task.getStatus() == Status.RUNNING) { interpreter.tick(0); }
-        Assert.assertEquals(2, flexibleMovementComponent.path.size());
+        Assert.assertEquals(2, flexibleMovementComponent.getPath().size());
         Assert.assertEquals(Status.SUCCESS, task.getStatus());
     }
 
     @Test
     public void testFindPathToNodeFailure() {
-        flexibleMovementComponent.pathGoalPosition = new Vector3i(-1,-1,-1);
+        flexibleMovementComponent.setPathGoal(new Vector3i(-1,-1,-1));
         CoreRegistry.put(PathfinderSystem.class, new PathfinderSystem());
         FindPathToNode node = new FindPathToNode();
         Task task = interpreter.start(node);
@@ -49,7 +49,7 @@ public class FindPathToNodeTest extends FlexibleMovementNodeTest {
 
         Assert.assertEquals(1, interpreter.tick(0));
         while(task.getStatus() == Status.RUNNING) { interpreter.tick(0); }
-        Assert.assertEquals(0, flexibleMovementComponent.path.size());
+        Assert.assertEquals(0, flexibleMovementComponent.getPath().size());
         Assert.assertEquals(Status.FAILURE, task.getStatus());
     }
 
@@ -57,7 +57,7 @@ public class FindPathToNodeTest extends FlexibleMovementNodeTest {
     public void testFindPathToNodeFlying() {
         flexibleMovementComponent.movementTypes.clear();
         flexibleMovementComponent.movementTypes.add("flying");
-        flexibleMovementComponent.pathGoalPosition = new Vector3i(3,3,3);
+        flexibleMovementComponent.setPathGoal(new Vector3i(3,3,3));
 
         CoreRegistry.put(PathfinderSystem.class, new PathfinderSystem());
         FindPathToNode node = new FindPathToNode();
@@ -67,6 +67,6 @@ public class FindPathToNodeTest extends FlexibleMovementNodeTest {
         Assert.assertEquals(1, interpreter.tick(0));
         while(task.getStatus() == Status.RUNNING) { interpreter.tick(0); }
         Assert.assertEquals(Status.SUCCESS, task.getStatus());
-        Assert.assertEquals(2, flexibleMovementComponent.path.size());
+        Assert.assertEquals(2, flexibleMovementComponent.getPath().size());
     }
 }

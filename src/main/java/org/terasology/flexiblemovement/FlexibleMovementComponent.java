@@ -22,6 +22,7 @@ import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.flexiblemovement.plugin.MovementPlugin;
 import org.terasology.flexiblemovement.plugin.FlyingMovementPlugin;
 import org.terasology.flexiblemovement.plugin.WalkingMovementPlugin;
+import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
@@ -33,17 +34,16 @@ public final class FlexibleMovementComponent implements Component {
     public Vector3i target = Vector3i.zero();
 
     // an entity to take the goal position from
-    public EntityRef pathGoalEntity = null;
+    private EntityRef pathGoalEntity = null;
 
     // last known goal position
-    public Vector3i pathGoalPosition = Vector3i.zero();
+    private Vector3i pathGoalPosition = Vector3i.zero();
 
     // generated path to goal
-    public List<Vector3i> path = Lists.newArrayList();
+    private List<Vector3i> path = Lists.newArrayList();
 
     // current index along path above
-    public int pathIndex = 0;
-
+    private int pathIndex = 0;
 
     public List<String> movementTypes = Lists.newArrayList("walking", "jumping");
     public boolean collidedHorizontally;
@@ -56,5 +56,55 @@ public final class FlexibleMovementComponent implements Component {
             return new FlyingMovementPlugin(world, time);
         }
         return new WalkingMovementPlugin(world, time);
+    }
+
+    public void setPathGoal(EntityRef entity) {
+        pathGoalEntity = entity;
+        resetPath();
+    }
+
+    public void setPathGoal(Vector3i pos) {
+        pathGoalPosition.set(pos);
+        pathGoalEntity = null;
+        resetPath();
+    }
+
+    public Vector3i getPathGoal() {
+        if(pathGoalEntity != null && pathGoalEntity.getComponent(LocationComponent.class) != null) {
+            pathGoalPosition.set(new Vector3i(pathGoalEntity.getComponent(LocationComponent.class).getWorldPosition()));
+        }
+        return pathGoalPosition;
+    }
+
+    public void resetPath() {
+        path.clear();
+        pathIndex = 0;
+    }
+
+    public void advancePath() {
+        pathIndex += 1;
+        if(pathIndex < path.size()) {
+            target = path.get(pathIndex);
+        }
+    }
+
+    public boolean isPathFinished() {
+        return pathIndex >= path.size();
+    }
+
+    public void setPath(List<Vector3i> path) {
+        resetPath();
+        this.path.addAll(path);
+        if(pathIndex < path.size()) {
+            target = path.get(pathIndex);
+        }
+    }
+
+    public List<Vector3i> getPath() {
+        return path;
+    }
+
+    public int getPathIndex() {
+        return pathIndex;
     }
 }

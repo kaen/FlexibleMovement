@@ -51,15 +51,13 @@ public class FindDummyPathToNode extends Node {
         public Status update(float dt) {
 
             FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
-            Vector3i start = new Vector3i(actor().getComponent(LocationComponent.class).getWorldPosition());
-            Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).pathGoalPosition;
+            Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).getPathGoal();
 
-            if(start == null || goal == null) {
+            if(goal == null) {
                 return Status.FAILURE;
             }
 
-            movement.path = Arrays.asList(start, goal);
-            movement.pathIndex = 0;
+            movement.setPath(Arrays.asList(goal));
             actor().save(movement);
 
             return Status.SUCCESS;

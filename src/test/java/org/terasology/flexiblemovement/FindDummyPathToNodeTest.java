@@ -25,14 +25,14 @@ import org.terasology.registry.InjectionHelper;
 public class FindDummyPathToNodeTest extends FlexibleMovementNodeTest {
     @Test
     public void testFindDummyPathToNodeDefault() {
-        flexibleMovementComponent.pathGoalPosition = new Vector3i(2,0,2);
+        flexibleMovementComponent.setPathGoal(new Vector3i(2,0,2));
         FindDummyPathToNode node = new FindDummyPathToNode();
         Task task = interpreter.start(node);
         InjectionHelper.inject(task);
 
         Assert.assertEquals(1, interpreter.tick(0));
         while(task.getStatus() == Status.RUNNING) { interpreter.tick(0); }
-        Assert.assertEquals(2, flexibleMovementComponent.path.size());
+        Assert.assertEquals(2, flexibleMovementComponent.getPath().size());
         Assert.assertEquals(Status.SUCCESS, task.getStatus());
     }
 }

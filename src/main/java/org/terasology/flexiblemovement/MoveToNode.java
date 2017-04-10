@@ -67,7 +67,7 @@ public class MoveToNode extends Node {
 
             Vector3f moveTarget = flexibleMovementComponent.target.toVector3f();
 
-            if(location.getWorldPosition().distance(moveTarget) <= 0.5) {
+            if(location.getWorldPosition().distance(moveTarget) <= 0.3) {
                 return Status.SUCCESS;
             }
 
