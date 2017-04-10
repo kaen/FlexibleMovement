@@ -43,9 +43,9 @@ public class FlyingMovementPlugin extends MovementPlugin {
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
         LocationComponent location = entity.getComponent(LocationComponent.class);
-        if(!getPathfindingPlugin(entity).isWalkable(new Vector3i(dest))) {
-            return null;
-        }
+//        if(!getPathfindingPlugin(entity).isWalkable(new Vector3i(dest))) {
+//            return null;
+//        }
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
@@ -57,8 +57,11 @@ public class FlyingMovementPlugin extends MovementPlugin {
 
         float yaw = (float) Math.atan2(velocity.x, velocity.z);
         float pitch = (float) Math.atan2(velocity.y, Math.hypot(velocity.x, velocity.z));
-        movement.mode = MovementMode.FLYING;
-        movement.grounded = false;
+
+        if(movement.mode != MovementMode.FLYING) {
+            movement.mode = MovementMode.FLYING;
+            entity.send(new SetMovementModeEvent(MovementMode.FLYING));
+        }
         entity.saveComponent(movement);
         return new CharacterMoveInputEvent(sequence, pitch * TeraMath.RAD_TO_DEG + 180, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, true, time.getGameDeltaInMs());
     }

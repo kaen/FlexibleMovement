@@ -28,7 +28,7 @@ public class MoveAlongPathNode extends DecoratorNode {
         return new MoveAlongPathTask(this);
     }
 
-    private class MoveAlongPathTask extends Task {
+    public class MoveAlongPathTask extends Task {
         protected MoveAlongPathTask(Node node) {
             super(node);
         }

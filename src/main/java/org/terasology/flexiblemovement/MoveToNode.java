@@ -21,53 +21,63 @@ import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
+import org.terasology.logic.characters.CharacterStateEvent;
 import org.terasology.logic.characters.MovementMode;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
+import org.terasology.physics.engine.PhysicsEngine;
 import org.terasology.registry.In;
+import org.terasology.utilities.random.FastRandom;
+import org.terasology.utilities.random.Random;
 import org.terasology.world.WorldProvider;
 
-public class MoveToNode extends Node{
+public class MoveToNode extends Node {
+
     @Override
     public MoveToNodeTask createTask() {
         return new MoveToNodeTask(this);
     }
 
-    private class MoveToNodeTask extends Task {
-        protected MoveToNodeTask(Node node) {
+    public class MoveToNodeTask extends Task {
+        public MoveToNodeTask(Node node) {
             super(node);
         }
-        private int sequenceNumber = 0;
-        private Vector3f lastPos = new Vector3f();
 
+        private final float UPDATE_INTERVAL_MILLIS = 100;
         @In
-        Time time;
+        private Time time;
         @In
-        WorldProvider world;
+        private WorldProvider world;
         @In
-        FlexibleMovementSystem flexibleMovementSystem;
+        private FlexibleMovementSystem flexibleMovementSystem;
 
         @Override
         public Status update(float dt) {
             LocationComponent location = actor().getComponent(LocationComponent.class);
-            CharacterMovementComponent movement = actor().getComponent(CharacterMovementComponent.class);
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
-            Vector3f moveTarget = flexibleMovementComponent.target.toVector3f().add(0.5f, 0.5f, 0.5f);
+
+            if(time.getGameTimeInMs() < flexibleMovementComponent.lastInput + UPDATE_INTERVAL_MILLIS) {
+                return Status.RUNNING;
+            }
+
+            Vector3f moveTarget = flexibleMovementComponent.target.toVector3f();
 
             if(location.getWorldPosition().distance(moveTarget) <= 0.5) {
                 return Status.SUCCESS;
             }
 
-            sequenceNumber++;
-            CharacterMoveInputEvent result = flexibleMovementComponent.getMovementPlugin(world, time).move(actor().getEntity(), moveTarget, sequenceNumber);
+            flexibleMovementComponent.sequenceNumber++;
+
+            CharacterMoveInputEvent result = flexibleMovementComponent.getMovementPlugin(world, time).move(actor().getEntity(), moveTarget, flexibleMovementComponent.sequenceNumber);
             if(result != null) {
                 flexibleMovementSystem.enqueue(actor().getEntity(), result);
+                flexibleMovementComponent.lastInput = time.getGameTimeInMs();
             }
 
             flexibleMovementComponent.collidedHorizontally = false;
-            actor().getEntity().saveComponent(flexibleMovementComponent);
+            actor().save(flexibleMovementComponent);
 
             return result == null ? Status.FAILURE : Status.RUNNING;
         }

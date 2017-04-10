@@ -39,7 +39,7 @@ public class FindPathToNode extends Node {
         return new FindPathToTask(this);
     }
 
-    private class FindPathToTask extends Task{
+    public class FindPathToTask extends Task{
         Status pathStatus = null;
         List<Vector3i> pathResult = null;
         @In
@@ -47,6 +47,8 @@ public class FindPathToNode extends Node {
 
         @In
         private WorldProvider world;
+
+        @In
         private Time time;
 
         protected FindPathToTask(Node node) {
@@ -64,6 +66,7 @@ public class FindPathToNode extends Node {
                 JPSConfig config = new JPSConfig(start, goal);
                 config.useLineOfSight = true;
                 config.maxTime = 0.1f;
+                config.maxDepth = 100;
                 config.plugin = flexibleMovementComponent.getMovementPlugin(world, time).getPathfindingPlugin(actor().getEntity());
                 system.requestPath(config, new PathfinderCallback() {
                     @Override
@@ -81,6 +84,7 @@ public class FindPathToNode extends Node {
             if(pathStatus == Status.SUCCESS) {
                 FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
                 movement.path = pathResult;
+                movement.pathIndex = 0;
                 actor().save(movement);
             }
 

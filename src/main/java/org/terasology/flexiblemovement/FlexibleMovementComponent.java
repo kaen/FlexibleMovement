@@ -21,6 +21,7 @@ import org.terasology.entitySystem.Component;
 import org.terasology.flexiblemovement.plugin.MovementPlugin;
 import org.terasology.flexiblemovement.plugin.FlyingMovementPlugin;
 import org.terasology.flexiblemovement.plugin.WalkingMovementPlugin;
+import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
@@ -33,6 +34,10 @@ public final class FlexibleMovementComponent implements Component {
     public Vector3i pathTarget = Vector3i.zero();
     public List<String> movementTypes = Lists.newArrayList("walking", "jumping");
     public boolean collidedHorizontally;
+    public float lastInput;
+    public float stuckSince;
+    public Vector3f stuckPosition = Vector3f.zero();
+    public int sequenceNumber;
 
     public MovementPlugin getMovementPlugin(WorldProvider world, Time time) {
         // TODO: registry system for these

@@ -42,9 +42,9 @@ public class WalkingMovementPlugin extends MovementPlugin {
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
         LocationComponent location = entity.getComponent(LocationComponent.class);
-        if(!getPathfindingPlugin(entity).isWalkable(new Vector3i(dest))) {
-            return null;
-        }
+//        if(!getPathfindingPlugin(entity).isWalkable(new Vector3i(dest))) {
+//            return null;
+//        }
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
