@@ -30,6 +30,11 @@ import org.terasology.world.WorldProvider;
 
 import java.util.List;
 
+/**
+ * Validates the entity's current path for walkability (according to the pathfinding plugin its using)
+ * SUCCESS: when there are no unwalkable waypoints
+ * FAILURE: otherwise
+ */
 public class ValidatePathNode extends Node {
 
     @Override

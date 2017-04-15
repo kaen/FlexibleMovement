@@ -35,6 +35,8 @@ import org.terasology.world.WorldProvider;
 
 /**
  * Uses an actor's MovementPlugin to move it to FlexibleMovementComponent.target
+ * SUCCESS: When the actor reaches FlexibleMovementComponent.target
+ * FAILURE: When the actor believe it is unable to reach its immediate target
  */
 public class MoveToNode extends Node {
 

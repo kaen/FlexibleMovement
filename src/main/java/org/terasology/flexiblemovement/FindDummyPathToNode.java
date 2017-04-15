@@ -29,6 +29,7 @@ import java.util.Arrays;
 /**
  * Constructs a dummy two-step path consisting of only the actor's current position and goal position
  * Meant as a cheap fallback when full pathing is not needed or possible
+ * SUCCESS: Always
  */
 public class FindDummyPathToNode extends Node {
     @Override

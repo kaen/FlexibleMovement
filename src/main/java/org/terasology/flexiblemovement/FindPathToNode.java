@@ -31,6 +31,8 @@ import java.util.List;
 
 /**
  * Finds a path to the pathGoalPosition of the Actor, stores it in FlexibileMovementComponent.path
+ * SUCCESS: When the pathfinder returns a valid path
+ * FAILURE: When the pathfinder returns a failure or invalid path
  */
 public class FindPathToNode extends Node {
     @Override
