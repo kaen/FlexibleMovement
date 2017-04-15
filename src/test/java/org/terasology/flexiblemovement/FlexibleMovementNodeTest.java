@@ -49,6 +49,7 @@ public class FlexibleMovementNodeTest {
         locationComponent = new LocationComponent();
         characterMovementComponent = new CharacterMovementComponent();
         flexibleMovementComponent = new FlexibleMovementComponent();
+        flexibleMovementComponent.lastInput = -10000;
         entityManager = env.getContext().get(EntityManager.class);
         actor = new Actor(entityManager.create(locationComponent, characterMovementComponent, flexibleMovementComponent));
         interpreter = new Interpreter(actor);

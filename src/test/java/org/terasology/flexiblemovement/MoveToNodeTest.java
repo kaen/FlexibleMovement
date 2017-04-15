@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.terasology.assets.AssetFactory;
 import org.terasology.engine.SimpleUri;
+import org.terasology.engine.Time;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -69,7 +70,8 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
 
         // now move to the target and ensure completion
         done = false;
-        locationComponent.setWorldPosition(new Vector3f(0.5f,0.5f,1.5f));
+        locationComponent.setWorldPosition(flexibleMovementComponent.target.toVector3f());
+        actor.save(locationComponent);
         Assert.assertEquals(Status.SUCCESS, task.update(0));
         flexibleMovementSystem.update(0);
         Assert.assertFalse(done);
@@ -99,6 +101,7 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
         done = true;
         Task task = interpreter.start(moveToNode);
         do {
+            flexibleMovementComponent.lastInput = -10000;
             Assert.assertTrue(done);
             done = false;
             interpreter.tick(0);
@@ -107,6 +110,6 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
         } while(Status.RUNNING == task.getStatus());
 
         Assert.assertEquals(Status.SUCCESS, task.getStatus());
-        Assert.assertTrue(flexibleMovementComponent.target.toVector3f().add(0.5f,0.5f,0.5f).distance(locationComponent.getWorldPosition()) < 0.5);
+        Assert.assertTrue(flexibleMovementComponent.target.toVector3f().distance(locationComponent.getWorldPosition()) < 0.5);
     }
 }

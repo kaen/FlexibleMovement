@@ -60,15 +60,14 @@ public class MoveToNode extends Node {
         public Status update(float dt) {
             LocationComponent location = actor().getComponent(LocationComponent.class);
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
+            Vector3f moveTarget = flexibleMovementComponent.target.toVector3f();
+
+            if(location.getWorldPosition().distance(moveTarget) <= 0.5) {
+                return Status.SUCCESS;
+            }
 
             if(time.getGameTimeInMs() < flexibleMovementComponent.lastInput + UPDATE_INTERVAL_MILLIS) {
                 return Status.RUNNING;
-            }
-
-            Vector3f moveTarget = flexibleMovementComponent.target.toVector3f();
-
-            if(location.getWorldPosition().distance(moveTarget) <= 0.3) {
-                return Status.SUCCESS;
             }
 
             flexibleMovementComponent.sequenceNumber++;
