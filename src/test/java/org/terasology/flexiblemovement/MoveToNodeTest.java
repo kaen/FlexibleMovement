@@ -86,7 +86,7 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
         EventReceiver testEventReceiver = new EventReceiver<CharacterMoveInputEvent>() {
             @Override
             public void onEvent(CharacterMoveInputEvent event, EntityRef entity) {
-                Vector3f realTarget = flexibleMovementComponent.target.toVector3f().add(0.5f,0.5f,0.5f);
+                Vector3f realTarget = flexibleMovementComponent.target.toVector3f();
                 float beforeDistance = realTarget.distance(locationComponent.getWorldPosition());
                 float afterDistance = realTarget.distance(locationComponent.getWorldPosition().add(event.getMovementDirection()));
                 Assert.assertTrue(afterDistance < beforeDistance);
@@ -111,5 +111,36 @@ public class MoveToNodeTest extends FlexibleMovementNodeTest {
 
         Assert.assertEquals(Status.SUCCESS, task.getStatus());
         Assert.assertTrue(flexibleMovementComponent.target.toVector3f().distance(locationComponent.getWorldPosition()) < 0.5);
+    }
+
+    @Test
+    public void testMoveToNodeWhenStuck() {
+        // a walking entity told to move to a target in the air
+        flexibleMovementComponent.target.set(0,3,0);
+        MoveToNode moveToNode = new MoveToNode();
+        EventReceiver testEventReceiver = new EventReceiver<CharacterMoveInputEvent>() {
+            @Override
+            public void onEvent(CharacterMoveInputEvent event, EntityRef entity) {
+                locationComponent.setWorldPosition(locationComponent.getWorldPosition().add(event.getMovementDirection()));
+                done = true;
+            }
+        };
+        EventSystem eventSystem = CoreRegistry.get(EventSystem.class);
+        eventSystem.registerEventReceiver(testEventReceiver, CharacterMoveInputEvent.class);
+
+        // ensure we move in the right direction
+        done = true;
+        Task task = interpreter.start(moveToNode);
+        do {
+            flexibleMovementComponent.lastInput = -10000;
+            Assert.assertTrue(done);
+            done = false;
+            interpreter.tick(0);
+            flexibleMovementSystem.update(0);
+            Assert.assertEquals(MovementMode.WALKING, characterMovementComponent.mode);
+        } while(Status.RUNNING == task.getStatus());
+
+        Assert.assertEquals(Status.FAILURE, task.getStatus());
+        Assert.assertTrue(locationComponent.getWorldPosition().distance(Vector3f.zero()) < 0.5);
     }
 }

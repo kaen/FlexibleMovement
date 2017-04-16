@@ -36,7 +36,7 @@ import org.terasology.world.WorldProvider;
 /**
  * Uses an actor's MovementPlugin to move it to FlexibleMovementComponent.target
  * SUCCESS: When the actor reaches FlexibleMovementComponent.target
- * FAILURE: When the actor believe it is unable to reach its immediate target
+ * FAILURE: When the actor believes it is unable to reach its immediate target
  */
 public class MoveToNode extends Node {
 
@@ -46,6 +46,8 @@ public class MoveToNode extends Node {
     }
 
     public class MoveToNodeTask extends Task {
+        private float STUCK_MOVESPEED_PROPORTION = 0.2f;
+
         public MoveToNodeTask(Node node) {
             super(node);
         }
@@ -58,11 +60,20 @@ public class MoveToNode extends Node {
         @In
         private FlexibleMovementSystem flexibleMovementSystem;
 
+        private Vector3f lastPos;
+
         @Override
         public Status update(float dt) {
             LocationComponent location = actor().getComponent(LocationComponent.class);
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
+            CharacterMovementComponent characterMovementComponent = actor().getComponent(CharacterMovementComponent.class);
             Vector3f moveTarget = flexibleMovementComponent.target.toVector3f();
+
+            if(lastPos != null && location.getWorldPosition().distance(lastPos) < (UPDATE_INTERVAL_MILLIS / 1000.0f) * STUCK_MOVESPEED_PROPORTION * characterMovementComponent.speedMultiplier) {
+                return Status.FAILURE;
+            }
+
+            lastPos = location.getWorldPosition();
 
             if(location.getWorldPosition().distance(moveTarget) <= 0.5) {
                 return Status.SUCCESS;
