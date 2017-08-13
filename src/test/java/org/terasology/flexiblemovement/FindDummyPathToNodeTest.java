@@ -23,16 +23,16 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.InjectionHelper;
 
 public class FindDummyPathToNodeTest extends FlexibleMovementNodeTest {
-    @Test
-    public void testFindDummyPathToNodeDefault() {
-        flexibleMovementComponent.setPathGoal(new Vector3i(2,0,2));
-        FindDummyPathToNode node = new FindDummyPathToNode();
-        Task task = interpreter.start(node);
-        InjectionHelper.inject(task);
-
-        Assert.assertEquals(1, interpreter.tick(0));
-        while(task.getStatus() == Status.RUNNING) { interpreter.tick(0); }
-        Assert.assertEquals(1, flexibleMovementComponent.getPath().size());
-        Assert.assertEquals(Status.SUCCESS, task.getStatus());
-    }
+//    @Test
+//    public void testFindDummyPathToNodeDefault() {
+//        flexibleMovementComponent.setPathGoal(new Vector3i(2,0,2));
+//        FindDummyPathToNode node = new FindDummyPathToNode();
+//        Task task = interpreter.start(node);
+//        InjectionHelper.inject(task);
+//
+//        Assert.assertEquals(1, interpreter.tick(0));
+//        while(task.getStatus() == Status.RUNNING) { interpreter.tick(0); }
+//        Assert.assertEquals(1, flexibleMovementComponent.getPath().size());
+//        Assert.assertEquals(Status.SUCCESS, task.getStatus());
+//    }
 }

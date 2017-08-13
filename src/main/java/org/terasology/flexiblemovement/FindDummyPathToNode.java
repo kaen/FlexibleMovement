@@ -36,7 +36,6 @@ public class FindDummyPathToNode extends Node {
     public FindDummyPathToTask createTask() {
         return new FindDummyPathToTask(this);
     }
-
     public static class FindDummyPathToTask extends Task{
         @In
         PathfinderSystem system;

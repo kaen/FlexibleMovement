@@ -17,7 +17,6 @@ package org.terasology.flexiblemovement;
 
 import org.junit.Before;
 import org.terasology.entitySystem.entity.EntityManager;
-import org.terasology.flexiblepathfinding.WorldProvidingHeadlessEnvironment;
 import org.terasology.logic.behavior.tree.Actor;
 import org.terasology.logic.behavior.tree.Interpreter;
 import org.terasology.logic.characters.CharacterMovementComponent;
@@ -25,33 +24,32 @@ import org.terasology.logic.location.LocationComponent;
 import org.terasology.registry.CoreRegistry;
 
 public class FlexibleMovementNodeTest {
-    protected boolean done;
-    protected LocationComponent locationComponent;
-    protected CharacterMovementComponent characterMovementComponent;
-    protected FlexibleMovementComponent flexibleMovementComponent;
-    protected Interpreter interpreter;
-    protected FlexibleMovementSystem flexibleMovementSystem;
-    protected WorldProvidingHeadlessEnvironment env;
-    protected Actor actor;
-    protected EntityManager entityManager;
-
-    @Before
-    public void setup() {
-        env = TestHelper.createEnvironment(new String[]{
-                "XXXXX|XXXXX|XXXXX|XXXXX",
-                "XXXXX|XXXXX|XXXXX|XXXXX",
-                "XXXXX|XXXXX|XXXXX|XXXXX",
-                "XXXXX|XXXXX|XXXXX|XXXXX",
-                "XXXXX|XXXXX|XXXXX|XXXXX"
-        }, new String[0]);
-        flexibleMovementSystem = new FlexibleMovementSystem();
-        CoreRegistry.put(FlexibleMovementSystem.class, flexibleMovementSystem);
-        locationComponent = new LocationComponent();
-        characterMovementComponent = new CharacterMovementComponent();
-        flexibleMovementComponent = new FlexibleMovementComponent();
-        flexibleMovementComponent.lastInput = -10000;
-        entityManager = env.getContext().get(EntityManager.class);
-        actor = new Actor(entityManager.create(locationComponent, characterMovementComponent, flexibleMovementComponent));
-        interpreter = new Interpreter(actor);
-    }
+//    protected boolean done;
+//    protected LocationComponent locationComponent;
+//    protected CharacterMovementComponent characterMovementComponent;
+//    protected FlexibleMovementComponent flexibleMovementComponent;
+//    protected Interpreter interpreter;
+//    protected FlexibleMovementSystem flexibleMovementSystem;
+//    protected Actor actor;
+//    protected EntityManager entityManager;
+//
+//    @Before
+//    public void setup() {
+//        env = TestHelper.createEnvironment(new String[]{
+//                "XXXXX|XXXXX|XXXXX|XXXXX",
+//                "XXXXX|XXXXX|XXXXX|XXXXX",
+//                "XXXXX|XXXXX|XXXXX|XXXXX",
+//                "XXXXX|XXXXX|XXXXX|XXXXX",
+//                "XXXXX|XXXXX|XXXXX|XXXXX"
+//        }, new String[0]);
+//        flexibleMovementSystem = new FlexibleMovementSystem();
+//        CoreRegistry.put(FlexibleMovementSystem.class, flexibleMovementSystem);
+//        locationComponent = new LocationComponent();
+//        characterMovementComponent = new CharacterMovementComponent();
+//        flexibleMovementComponent = new FlexibleMovementComponent();
+//        flexibleMovementComponent.lastInput = -10000;
+//        entityManager = env.getContext().get(EntityManager.class);
+//        actor = new Actor(entityManager.create(locationComponent, characterMovementComponent, flexibleMovementComponent));
+//        interpreter = new Interpreter(actor);
+//    }
 }

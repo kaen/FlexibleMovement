@@ -39,6 +39,9 @@ public final class FlexibleMovementComponent implements Component {
     // last known goal position
     private Vector3i pathGoalPosition = Vector3i.zero();
 
+    // acceptable distance from goal for completion
+    public double pathGoalDistance = 0;
+
     // generated path to goal
     private List<Vector3i> path = Lists.newArrayList();
 

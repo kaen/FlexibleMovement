@@ -25,55 +25,55 @@ import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 
 public class MoveAlongPathNodeTest extends FlexibleMovementNodeTest {
-
-    @Test
-    public void testMoveAlongPathNode() {
-        class TestMoveAlongPathNodeChildNode extends Node {
-            @Override
-            public TestMoveAlongPathNodeChildTask createTask() {
-                return new TestMoveAlongPathNodeChildTask(this);
-            }
-
-            class TestMoveAlongPathNodeChildTask extends Task {
-                protected TestMoveAlongPathNodeChildTask(Node node) {
-                    super(node);
-                }
-
-                @Override
-                public Status update(float dt) {
-                    locationComponent.setWorldPosition(flexibleMovementComponent.target.toVector3f());
-                    done = true;
-                    return Status.SUCCESS;
-                }
-
-                @Override
-                public void handle(Status result) {
-
-                }
-            }
-        }
-
-        MoveAlongPathNode moveAlongPathNode = new MoveAlongPathNode();
-        moveAlongPathNode.setChild(0, new TestMoveAlongPathNodeChildNode());
-        flexibleMovementComponent.setPath(Lists.newArrayList(new Vector3i(2,0,2), Vector3i.zero()));
-
-        Assert.assertEquals(new Vector3i(2,0,2), flexibleMovementComponent.target);
-
-        done = false;
-        Task task = interpreter.start(moveAlongPathNode);
-        Assert.assertEquals(2, interpreter.tick(0));
-        Assert.assertEquals(Vector3i.zero(), flexibleMovementComponent.target);
-        Assert.assertEquals(Status.RUNNING, task.getStatus());
-        Assert.assertEquals(2, flexibleMovementComponent.getPath().size());
-        Assert.assertEquals(1, flexibleMovementComponent.getPathIndex());
-        Assert.assertTrue(done);
-
-        done = false;
-        Assert.assertEquals(2, interpreter.tick(0));
-        Assert.assertEquals(Status.SUCCESS, task.getStatus());
-        Assert.assertEquals(Vector3i.zero(), flexibleMovementComponent.target);
-        Assert.assertEquals(0, flexibleMovementComponent.getPath().size());
-        Assert.assertEquals(0, flexibleMovementComponent.getPathIndex());
-        Assert.assertTrue(done);
-    }
+//
+//    @Test
+//    public void testMoveAlongPathNode() {
+//        class TestMoveAlongPathNodeChildNode extends Node {
+//            @Override
+//            public TestMoveAlongPathNodeChildTask createTask() {
+//                return new TestMoveAlongPathNodeChildTask(this);
+//            }
+//
+//            class TestMoveAlongPathNodeChildTask extends Task {
+//                protected TestMoveAlongPathNodeChildTask(Node node) {
+//                    super(node);
+//                }
+//
+//                @Override
+//                public Status update(float dt) {
+//                    locationComponent.setWorldPosition(flexibleMovementComponent.target.toVector3f());
+//                    done = true;
+//                    return Status.SUCCESS;
+//                }
+//
+//                @Override
+//                public void handle(Status result) {
+//
+//                }
+//            }
+//        }
+//
+//        MoveAlongPathNode moveAlongPathNode = new MoveAlongPathNode();
+//        moveAlongPathNode.setChild(0, new TestMoveAlongPathNodeChildNode());
+//        flexibleMovementComponent.setPath(Lists.newArrayList(new Vector3i(2,0,2), Vector3i.zero()));
+//
+//        Assert.assertEquals(new Vector3i(2,0,2), flexibleMovementComponent.target);
+//
+//        done = false;
+//        Task task = interpreter.start(moveAlongPathNode);
+//        Assert.assertEquals(2, interpreter.tick(0));
+//        Assert.assertEquals(Vector3i.zero(), flexibleMovementComponent.target);
+//        Assert.assertEquals(Status.RUNNING, task.getStatus());
+//        Assert.assertEquals(2, flexibleMovementComponent.getPath().size());
+//        Assert.assertEquals(1, flexibleMovementComponent.getPathIndex());
+//        Assert.assertTrue(done);
+//
+//        done = false;
+//        Assert.assertEquals(2, interpreter.tick(0));
+//        Assert.assertEquals(Status.SUCCESS, task.getStatus());
+//        Assert.assertEquals(Vector3i.zero(), flexibleMovementComponent.target);
+//        Assert.assertEquals(0, flexibleMovementComponent.getPath().size());
+//        Assert.assertEquals(0, flexibleMovementComponent.getPathIndex());
+//        Assert.assertTrue(done);
+//    }
 }

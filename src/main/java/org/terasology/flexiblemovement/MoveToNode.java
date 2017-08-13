@@ -15,6 +15,8 @@
  */
 package org.terasology.flexiblemovement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.engine.Time;
 import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;
@@ -39,6 +41,7 @@ import org.terasology.world.WorldProvider;
  * FAILURE: When the actor believes it is unable to reach its immediate target
  */
 public class MoveToNode extends Node {
+    static final private Logger logger = LoggerFactory.getLogger(MoveToNodeTask.class);
 
     @Override
     public MoveToNodeTask createTask() {
@@ -60,20 +63,11 @@ public class MoveToNode extends Node {
         @In
         private FlexibleMovementSystem flexibleMovementSystem;
 
-        private Vector3f lastPos;
-
         @Override
         public Status update(float dt) {
             LocationComponent location = actor().getComponent(LocationComponent.class);
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
-            CharacterMovementComponent characterMovementComponent = actor().getComponent(CharacterMovementComponent.class);
             Vector3f moveTarget = flexibleMovementComponent.target.toVector3f();
-
-            if(lastPos != null && location.getWorldPosition().distance(lastPos) < (UPDATE_INTERVAL_MILLIS / 1000.0f) * STUCK_MOVESPEED_PROPORTION * characterMovementComponent.speedMultiplier) {
-                return Status.FAILURE;
-            }
-
-            lastPos = location.getWorldPosition();
 
             if(location.getWorldPosition().distance(moveTarget) <= 0.5) {
                 return Status.SUCCESS;
@@ -89,6 +83,8 @@ public class MoveToNode extends Node {
             if(result != null) {
                 flexibleMovementSystem.enqueue(actor().getEntity(), result);
                 flexibleMovementComponent.lastInput = time.getGameTimeInMs();
+            } else {
+                logger.debug("Movement plugin returned null");
             }
 
             flexibleMovementComponent.collidedHorizontally = false;
