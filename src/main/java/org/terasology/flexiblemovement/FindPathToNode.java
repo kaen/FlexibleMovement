@@ -15,7 +15,6 @@
  */
 package org.terasology.flexiblemovement;
 
-import org.terasology.engine.Time;
 import org.terasology.flexiblepathfinding.JPSConfig;
 import org.terasology.flexiblepathfinding.PathfinderCallback;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
@@ -25,7 +24,6 @@ import org.terasology.logic.behavior.tree.Task;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
-import org.terasology.world.WorldProvider;
 
 import java.util.List;
 
@@ -44,13 +42,10 @@ public class FindPathToNode extends Node {
         Status pathStatus = null;
         List<Vector3i> pathResult = null;
         @In
-        PathfinderSystem system;
+        PathfinderSystem pathfinderSystem;
 
         @In
-        private WorldProvider world;
-
-        @In
-        private Time time;
+        PluginSystem pluginSystem;
 
         protected FindPathToTask(Node node) {
             super(node);
@@ -69,12 +64,12 @@ public class FindPathToNode extends Node {
                 }
 
                 JPSConfig config = new JPSConfig(start, goal);
-                config.useLineOfSight = true;
+                config.useLineOfSight = false;
                 config.maxTime = 0.2f;
                 config.maxDepth = 100;
                 config.goalDistance = flexibleMovementComponent.pathGoalDistance;
-                config.plugin = flexibleMovementComponent.getMovementPlugin(world, time).getPathfindingPlugin(actor().getEntity());
-                system.requestPath(config, new PathfinderCallback() {
+                config.plugin = pluginSystem.getMovementPlugin(actor().getEntity()).getJpsPlugin(actor().getEntity());
+                pathfinderSystem.requestPath(config, new PathfinderCallback() {
                     @Override
                     public void pathReady(List<Vector3i> path, Vector3i target) {
                         if(path == null || path.size() == 0) {

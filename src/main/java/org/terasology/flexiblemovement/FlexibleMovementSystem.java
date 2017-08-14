@@ -15,22 +15,34 @@
  */
 package org.terasology.flexiblemovement;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.terasology.engine.SimpleUri;
+import org.terasology.engine.Time;
+import org.terasology.engine.Uri;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.*;
+import org.terasology.flexiblemovement.plugin.*;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.events.HorizontalCollisionEvent;
+import org.terasology.registry.In;
 import org.terasology.registry.Share;
+import org.terasology.world.WorldProvider;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 
 @Share(FlexibleMovementSystem.class)
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class FlexibleMovementSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
-    Map<EntityRef, CharacterMoveInputEvent> eventQueue = Maps.newHashMap();
+    private Map<EntityRef, CharacterMoveInputEvent> eventQueue = Maps.newHashMap();
+    private Logger logger = LoggerFactory.getLogger(FlexibleMovementSystem.class);
 
     @Override
     public void update(float delta) {

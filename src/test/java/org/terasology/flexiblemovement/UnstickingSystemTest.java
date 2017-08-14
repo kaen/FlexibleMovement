@@ -42,6 +42,7 @@ public class UnstickingSystemTest extends FlexibleMovementTestingEnvironment {
         worldProvider.setBlock(Vector3i.zero(), blockManager.getBlock("engine:unloaded"));
         worldProvider.setBlock(Vector3i.up(), blockManager.getBlock("engine:air"));
         runUntil(()-> worldProvider.getBlock(Vector3i.up()).isPenetrable());
+        runWhile(()-> worldProvider.getBlock(locationComponent.getWorldPosition()).isPenetrable());
 
         Assert.assertTrue(!worldProvider.getBlock(locationComponent.getWorldPosition()).isPenetrable());
         runWhile(()-> !worldProvider.getBlock(locationComponent.getWorldPosition()).isPenetrable());

@@ -18,6 +18,7 @@ package org.terasology.flexiblemovement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.engine.Time;
+import org.terasology.flexiblemovement.plugin.MovementPlugin;
 import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
@@ -49,19 +50,16 @@ public class MoveToNode extends Node {
     }
 
     public class MoveToNodeTask extends Task {
-        private float STUCK_MOVESPEED_PROPORTION = 0.2f;
+        private static final float UPDATE_INTERVAL_MILLIS = 100;
+
+        @In private Time time;
+        @In private WorldProvider world;
+        @In private FlexibleMovementSystem flexibleMovementSystem;
+        @In private PluginSystem pluginSystem;
 
         public MoveToNodeTask(Node node) {
             super(node);
         }
-
-        private final float UPDATE_INTERVAL_MILLIS = 100;
-        @In
-        private Time time;
-        @In
-        private WorldProvider world;
-        @In
-        private FlexibleMovementSystem flexibleMovementSystem;
 
         @Override
         public Status update(float dt) {
@@ -78,13 +76,19 @@ public class MoveToNode extends Node {
             }
 
             flexibleMovementComponent.sequenceNumber++;
+            MovementPlugin plugin = pluginSystem.getMovementPlugin(actor().getEntity());
+            CharacterMoveInputEvent result = plugin.move(
+                    actor().getEntity(),
+                    moveTarget,
+                    flexibleMovementComponent.sequenceNumber
+            );
 
-            CharacterMoveInputEvent result = flexibleMovementComponent.getMovementPlugin(world, time).move(actor().getEntity(), moveTarget, flexibleMovementComponent.sequenceNumber);
             if(result != null) {
                 flexibleMovementSystem.enqueue(actor().getEntity(), result);
                 flexibleMovementComponent.lastInput = time.getGameTimeInMs();
             } else {
                 logger.debug("Movement plugin returned null");
+                return Status.FAILURE;
             }
 
             flexibleMovementComponent.collidedHorizontally = false;

@@ -16,14 +16,12 @@
 package org.terasology.flexiblemovement;
 
 import org.terasology.engine.Time;
-import org.terasology.flexiblepathfinding.JPSConfig;
-import org.terasology.flexiblepathfinding.PathfinderCallback;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
+import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
 import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
-import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 import org.terasology.world.WorldProvider;
@@ -45,14 +43,9 @@ public class ValidatePathNode extends Node {
     public class ValidatePathTask extends Task{
         Status pathStatus = null;
         List<Vector3i> pathResult = null;
-        @In
-        PathfinderSystem system;
-
-        @In
-        private WorldProvider world;
-
-        @In
-        private Time time;
+        @In private PathfinderSystem system;
+        @In private PluginSystem pluginSystem;
+        @In private FlexibleMovementSystem flexibleMovementSystem;
 
         protected ValidatePathTask(Node node) {
             super(node);
@@ -61,7 +54,7 @@ public class ValidatePathNode extends Node {
         @Override
         public Status update(float dt) {
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
-            StandardPlugin pathfindingPlugin = flexibleMovementComponent.getMovementPlugin(world, time).getPathfindingPlugin(actor().getEntity());
+            JPSPlugin pathfindingPlugin = pluginSystem.getMovementPlugin(actor().getEntity()).getJpsPlugin(actor().getEntity());
             if(flexibleMovementComponent == null || pathfindingPlugin == null) {
                 return Status.FAILURE;
             }

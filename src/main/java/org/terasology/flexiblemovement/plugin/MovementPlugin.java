@@ -17,20 +17,46 @@ package org.terasology.flexiblemovement.plugin;
 
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
+import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.world.WorldProvider;
+import org.terasology.world.generation.World;
 
 public abstract class MovementPlugin {
-    protected final WorldProvider world;
-    protected final Time time;
+    private WorldProvider world;
+    private Time time;
 
     public MovementPlugin(WorldProvider world, Time time) {
-        this.world = world;
         this.time = time;
-    };
+        this.world = world;
+    }
 
-    public abstract StandardPlugin getPathfindingPlugin(EntityRef entity);
+    // needed to instantiate plugins by name in the movement system
+    public MovementPlugin() {
+        //do nothing
+    }
+
+    public static String getName() {
+        return "movement";
+    }
+
+    public abstract JPSPlugin getJpsPlugin(EntityRef entity);
     public abstract CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence);
+
+    public WorldProvider getWorld() {
+        return world;
+    }
+
+    public void setWorld(WorldProvider world) {
+        this.world = world;
+    }
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
 }

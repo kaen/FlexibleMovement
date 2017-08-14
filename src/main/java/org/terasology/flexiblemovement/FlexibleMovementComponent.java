@@ -53,14 +53,6 @@ public final class FlexibleMovementComponent implements Component {
     public float lastInput;
     public int sequenceNumber;
 
-    public MovementPlugin getMovementPlugin(WorldProvider world, Time time) {
-        // TODO: registry system for these
-        if(movementTypes.get(0).equalsIgnoreCase("flying")) {
-            return new FlyingMovementPlugin(world, time);
-        }
-        return new WalkingMovementPlugin(world, time);
-    }
-
     public void setPathGoal(EntityRef entity) {
         pathGoalEntity = entity;
         resetPath();

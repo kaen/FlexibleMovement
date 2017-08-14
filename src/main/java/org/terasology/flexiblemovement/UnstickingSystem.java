@@ -15,6 +15,7 @@
  */
 package org.terasology.flexiblemovement;
 
+import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
@@ -38,13 +39,24 @@ public class UnstickingSystem extends BaseComponentSystem implements UpdateSubsc
     @In
     private WorldProvider worldProvider;
 
+    @In
+    private Time time;
+
+    private static float UNSTICK_INTERVAL_MILLIS = 5000;
+    private float lastUnstick;
+
     @Override
     public void update(float delta) {
+        if (time.getGameTimeInMs() - lastUnstick < UNSTICK_INTERVAL_MILLIS) {
+            return;
+        }
+
+        lastUnstick = time.getGameTimeInMs();
         for (EntityRef entity : entityManager.getEntitiesWith(FlexibleMovementComponent.class, LocationComponent.class)) {
             LocationComponent locationComponent = entity.getComponent(LocationComponent.class);
             Vector3f pos = locationComponent.getWorldPosition();
-            pos.setY((float) Math.ceil(pos.y));
             if(!worldProvider.getBlock(new Vector3i(pos)).isPenetrable()) {
+                pos.setY((float) Math.ceil(pos.y + 0.00001f));
                 entity.send(new CharacterTeleportEvent(pos));
             }
         }

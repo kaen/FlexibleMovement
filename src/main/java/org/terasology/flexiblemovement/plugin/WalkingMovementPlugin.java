@@ -18,34 +18,32 @@ package org.terasology.flexiblemovement.plugin;
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
-import org.terasology.flexiblepathfinding.plugins.StandardPlugin;
+import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
+import org.terasology.flexiblepathfinding.plugins.basic.WalkingPlugin;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.characters.MovementMode;
-import org.terasology.logic.characters.events.SetMovementModeEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector3f;
-import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 public class WalkingMovementPlugin extends MovementPlugin {
     public WalkingMovementPlugin(WorldProvider world, Time time) {
         super(world, time);
     }
+    public WalkingMovementPlugin() {
+        super();
+    }
 
     @Override
-    public StandardPlugin getPathfindingPlugin(EntityRef entity) {
-        return new org.terasology.flexiblepathfinding.plugins.WalkingPlugin(world);
+    public JPSPlugin getJpsPlugin(EntityRef entity) {
+        return new WalkingPlugin(getWorld());
     }
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
         LocationComponent location = entity.getComponent(LocationComponent.class);
-//        if(!getPathfindingPlugin(entity).isWalkable(new Vector3i(dest))) {
-//            return null;
-//        }
-
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
         Vector3f velocity = new Vector3f(dest).sub(location.getWorldPosition());
@@ -60,6 +58,7 @@ public class WalkingMovementPlugin extends MovementPlugin {
             entity.saveComponent(movement);
         }
 
-        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, flexibleMovementComponent.collidedHorizontally, time.getGameDeltaInMs());
+        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, false, getTime()
+                .getGameDeltaInMs());
     }
 }
