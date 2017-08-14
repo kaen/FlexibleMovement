@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblemovement;
+package org.terasology.flexiblemovement.node;
 
+import org.terasology.flexiblemovement.FlexibleMovementComponent;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;

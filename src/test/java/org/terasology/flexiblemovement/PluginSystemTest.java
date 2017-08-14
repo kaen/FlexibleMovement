@@ -25,6 +25,7 @@ import org.terasology.flexiblemovement.plugin.CompositeMovementPlugin;
 import org.terasology.flexiblemovement.plugin.LeapingMovementPlugin;
 import org.terasology.flexiblemovement.plugin.MovementPlugin;
 import org.terasology.flexiblemovement.plugin.WalkingMovementPlugin;
+import org.terasology.flexiblemovement.system.PluginSystem;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.CompositePlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.LeapingPlugin;
