@@ -98,8 +98,8 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
                 "X  |XXX",
                 "XXX|XXX",
         }, new String[]{
-                "?  |1! ",
-                "   |   ",
+                "?  |123",
+                "   |  !",
                 "   |   "
         });
     }
