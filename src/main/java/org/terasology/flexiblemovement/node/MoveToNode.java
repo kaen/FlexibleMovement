@@ -26,8 +26,10 @@ import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
+import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 import org.terasology.world.WorldProvider;
 
@@ -60,9 +62,13 @@ public class MoveToNode extends Node {
         public Status update(float dt) {
             LocationComponent location = actor().getComponent(LocationComponent.class);
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
-            Vector3f moveTarget = flexibleMovementComponent.target.toVector3f();
+            CharacterMovementComponent characterMovementComponent = actor().getComponent(CharacterMovementComponent.class);
 
-            if(location.getWorldPosition().distance(moveTarget) <= 0.5) {
+            // TODO: why radius instead of height?
+            Vector3f adjustedMoveTarget = flexibleMovementComponent.target.toVector3f();
+            adjustedMoveTarget.addY(characterMovementComponent.radius);
+
+            if(location.getWorldPosition().distance(adjustedMoveTarget) < 0.2f) {
                 return Status.SUCCESS;
             }
 
@@ -74,22 +80,20 @@ public class MoveToNode extends Node {
             MovementPlugin plugin = pluginSystem.getMovementPlugin(actor().getEntity());
             CharacterMoveInputEvent result = plugin.move(
                     actor().getEntity(),
-                    moveTarget,
+                    adjustedMoveTarget,
                     flexibleMovementComponent.sequenceNumber
             );
 
             if(result != null) {
                 flexibleMovementSystem.enqueue(actor().getEntity(), result);
                 flexibleMovementComponent.lastInput = time.getGameTimeInMs();
+                flexibleMovementComponent.collidedHorizontally = false;
+                actor().save(flexibleMovementComponent);
             } else {
                 logger.debug("Movement plugin returned null");
-                return Status.FAILURE;
             }
 
-            flexibleMovementComponent.collidedHorizontally = false;
-            actor().save(flexibleMovementComponent);
-
-            return result == null ? Status.FAILURE : Status.RUNNING;
+            return Status.RUNNING;
         }
 
         @Override

@@ -57,8 +57,7 @@ public class LeapingMovementPlugin extends MovementPlugin {
             entity.saveComponent(movement);
         }
 
-        boolean jumping = delta.y > 0;
-        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, delta, false, jumping,
+        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, delta, false, true,
                 getTime()
                 .getGameDeltaInMs());
     }

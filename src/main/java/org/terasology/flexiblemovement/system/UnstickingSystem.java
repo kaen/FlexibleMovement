@@ -58,7 +58,7 @@ public class UnstickingSystem extends BaseComponentSystem implements UpdateSubsc
             Vector3f pos = locationComponent.getWorldPosition();
             if(!worldProvider.getBlock(new Vector3i(pos)).isPenetrable()) {
                 pos.setY((float) Math.ceil(pos.y + 0.00001f));
-                entity.send(new CharacterTeleportEvent(pos));
+//                entity.send(new CharacterTeleportEvent(pos));
             }
         }
     }

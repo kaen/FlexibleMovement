@@ -89,7 +89,7 @@ public class FindPathToNode extends Node {
 
                 // PF System returns paths including the starting point.
                 // Since we don't need to move to where we started, we remove the first point in the path
-                pathResult.remove(0);
+//                pathResult.remove(0);
 
                 movement.setPath(pathResult);
                 actor().save(movement);
