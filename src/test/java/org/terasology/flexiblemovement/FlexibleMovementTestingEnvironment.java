@@ -53,16 +53,16 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
     }
 
     public void executeExample(String[] world, String[] path) {
-        int surfaceHeight = 41;
-        forceAndWaitForGeneration(new Vector3i(0, surfaceHeight, 0));
+        int airHeight = 41;
+        forceAndWaitForGeneration(new Vector3i(0, airHeight, 0));
         WorldProvider worldProvider = getHostContext().get(WorldProvider.class);
         Block air = getHostContext().get(BlockManager.class).getBlock("engine:air");
         Block dirt = getHostContext().get(BlockManager.class).getBlock("core:dirt");
-        Region3i extents = Region3i.createFromCenterExtents(new Vector3i(0, surfaceHeight, 0), 0);
+        Region3i extents = Region3i.createFromCenterExtents(new Vector3i(0, airHeight, 0), 0);
 
         // set blocks from world data
         for (int z = 0; z < world.length; z++) {
-            int y = surfaceHeight;
+            int y = airHeight;
             String row = world[z];
             int x = 0;
             for (char c : row.toCharArray()) {
@@ -91,7 +91,7 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         Vector3i start = Vector3i.zero();
         Vector3i stop = Vector3i.zero();
         for (int z = 0; z < path.length; z++) {
-            int y = surfaceHeight;
+            int y = airHeight;
             String row = path[z];
             int x = 0;
             for (char c : row.toCharArray()) {

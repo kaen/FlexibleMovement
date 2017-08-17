@@ -45,20 +45,15 @@ public class WalkingMovementPlugin extends MovementPlugin {
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
         LocationComponent location = entity.getComponent(LocationComponent.class);
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
-        Vector3f velocity = new Vector3f(dest).sub(location.getWorldPosition());
-        velocity.y = 0;
-        if(velocity.lengthSquared() > 1.0f) {
-            velocity.normalize();
-        }
+        Vector3f delta = new Vector3f(dest).sub(location.getWorldPosition());
 
-        float yaw = (float) Math.atan2(velocity.x, velocity.z);
+        float yaw = (float) Math.atan2(delta.x, delta.z);
         if(movement.mode != MovementMode.WALKING) {
             movement.mode = MovementMode.WALKING;
             entity.saveComponent(movement);
         }
 
-        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, velocity, false, false, getTime()
+        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, delta, false, false, getTime()
                 .getGameDeltaInMs());
     }
 }

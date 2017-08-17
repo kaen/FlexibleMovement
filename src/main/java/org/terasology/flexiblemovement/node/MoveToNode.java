@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.engine.Time;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
+import org.terasology.flexiblemovement.plugin.WalkingMovementPlugin;
 import org.terasology.flexiblemovement.system.FlexibleMovementSystem;
 import org.terasology.flexiblemovement.system.PluginSystem;
 import org.terasology.flexiblemovement.plugin.MovementPlugin;
@@ -66,13 +67,15 @@ public class MoveToNode extends Node {
 
             // TODO: why radius instead of height?
             Vector3f adjustedMoveTarget = flexibleMovementComponent.target.toVector3f();
-            adjustedMoveTarget.addY(characterMovementComponent.radius);
+//            adjustedMoveTarget.addY(characterMovementComponent.radius);
 
-            if(location.getWorldPosition().distance(adjustedMoveTarget) < 0.2f) {
+            Vector3f position = location.getWorldPosition();
+            if (position.distance(adjustedMoveTarget) < 0.1f &&
+                    new Vector3i(position).distance(flexibleMovementComponent.target) == 0) {
                 return Status.SUCCESS;
             }
 
-            if(time.getGameTimeInMs() < flexibleMovementComponent.lastInput + UPDATE_INTERVAL_MILLIS) {
+            if (time.getGameTimeInMs() < flexibleMovementComponent.lastInput + UPDATE_INTERVAL_MILLIS) {
                 return Status.RUNNING;
             }
 
@@ -84,14 +87,26 @@ public class MoveToNode extends Node {
                     flexibleMovementComponent.sequenceNumber
             );
 
-            if(result != null) {
-                flexibleMovementSystem.enqueue(actor().getEntity(), result);
-                flexibleMovementComponent.lastInput = time.getGameTimeInMs();
-                flexibleMovementComponent.collidedHorizontally = false;
-                actor().save(flexibleMovementComponent);
-            } else {
+            if (result == null) {
+                // this is ugly, but due to unknown idiosyncrasies in the engine character movement code, characters
+                // sometimes sink into solid blocks below them. This causes reachability checks to fail intermittently,
+                // especially when characters stop moving. In an ideal world, we'd exit failure here to indicate our
+                // path is no longer valid. However, we instead fall back to a default movement plugin in the hopes
+                // that a gentle nudge in a probably-correct direction will at least make the physics reconcile the
+                // intersection, and hopefully return to properly penetrable blocks.
                 logger.debug("Movement plugin returned null");
+                MovementPlugin fallbackPlugin = new WalkingMovementPlugin(world, time);
+                result = fallbackPlugin.move(
+                        actor().getEntity(),
+                        adjustedMoveTarget,
+                        flexibleMovementComponent.sequenceNumber
+                );
             }
+
+            flexibleMovementSystem.enqueue(actor().getEntity(), result);
+            flexibleMovementComponent.lastInput = time.getGameTimeInMs();
+            flexibleMovementComponent.collidedHorizontally = false;
+            actor().save(flexibleMovementComponent);
 
             return Status.RUNNING;
         }

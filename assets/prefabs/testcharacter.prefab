@@ -2,6 +2,7 @@
   "FlexibleMovement": {
     "movementTypes": ["walking", "leaping"]
   },
+  "NameTag": { "text": "testcharacter" },
   "Behavior" : {
     "tree" : "naiveMoveTo"
   },
@@ -15,9 +16,6 @@
     "currentHealth": 1,
     "excessSpeedDamageMultiplier": 0,
     "destroyEntityOnNoHealth" : true
-  },
-  "BoxShape" : {
-    "extents" : [0.4, 0.4, 0.4]
   },
   "Trigger" : {
     "detectGroups" : ["engine:debris", "engine:sensor"]
@@ -33,8 +31,8 @@
     "speedMultiplier" : 0.3,
     "distanceBetweenFootsteps" : 0.2,
     "distanceBetweenSwimStrokes" : 2.5,
-    "height" : 1.6,
-    "radius" : 0.3,
+    "height" : 1.0,
+    "radius" : 0.2,
     "jumpSpeed" : 12
   }
 }

@@ -46,10 +46,6 @@ public class LeapingMovementPlugin extends MovementPlugin {
         LocationComponent location = entity.getComponent(LocationComponent.class);
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         Vector3f delta = new Vector3f(dest).sub(location.getWorldPosition());
-        delta.y = 0;
-        if(delta.lengthSquared() > 1.0f) {
-            delta.normalize();
-        }
 
         float yaw = (float) Math.atan2(delta.x, delta.z);
         if(movement.mode != MovementMode.WALKING) {
