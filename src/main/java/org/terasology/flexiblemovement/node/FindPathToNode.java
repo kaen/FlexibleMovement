@@ -67,8 +67,8 @@ public class FindPathToNode extends Node {
 
                 JPSConfig config = new JPSConfig(start, goal);
                 config.useLineOfSight = false;
-                config.maxTime = 0.2f;
-                config.maxDepth = 100;
+                config.maxTime = 0.25f;
+                config.maxDepth = 150;
                 config.goalDistance = flexibleMovementComponent.pathGoalDistance;
                 config.plugin = pluginSystem.getMovementPlugin(actor().getEntity()).getJpsPlugin(actor().getEntity());
                 pathfinderSystem.requestPath(config, new PathfinderCallback() {

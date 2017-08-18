@@ -44,21 +44,20 @@ public class FlyingMovementPlugin extends MovementPlugin {
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
-        LocationComponent location = entity.getComponent(LocationComponent.class);
+        Vector3f delta = getDelta(entity, dest);
+        float yaw = getYaw(delta);
+        long dt = getTime().getGameDeltaInMs();
+        float pitch = getPitch(delta);
+
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
-        Vector3f delta = new Vector3f(dest).sub(location.getWorldPosition());
-        delta.y += 0.1f; // a little nudge to stay airborn
-
-        float yaw = (float) Math.atan2(delta.x, delta.z);
-        float pitch = (float) Math.atan2(delta.y, Math.hypot(delta.x, delta.z));
-
         if(movement.mode != MovementMode.FLYING) {
-            movement.mode = MovementMode.FLYING;
             entity.send(new SetMovementModeEvent(MovementMode.FLYING));
         }
-        entity.saveComponent(movement);
-        return new CharacterMoveInputEvent(sequence, pitch * TeraMath.RAD_TO_DEG + 180, yaw * TeraMath.RAD_TO_DEG +
-                180, delta, false, delta.y > 0, getTime().getGameDeltaInMs());
+
+        return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, true, dt);
+    }
+
+    private float getPitch(Vector3f delta) {
+        return ((float) Math.atan2(delta.y, Math.hypot(delta.x, delta.z))) * TeraMath.RAD_TO_DEG + 180;
     }
 }

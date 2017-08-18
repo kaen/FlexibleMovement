@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.engine.Time;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
+import org.terasology.flexiblemovement.plugin.LeapingMovementPlugin;
 import org.terasology.flexiblemovement.plugin.WalkingMovementPlugin;
 import org.terasology.flexiblemovement.system.FlexibleMovementSystem;
 import org.terasology.flexiblemovement.system.PluginSystem;
@@ -48,7 +49,7 @@ public class MoveToNode extends Node {
     }
 
     public class MoveToNodeTask extends Task {
-        private static final float UPDATE_INTERVAL_MILLIS = 100;
+        private static final float UPDATE_INTERVAL_MILLIS = 0;
 
         @In private Time time;
         @In private WorldProvider world;
@@ -63,14 +64,11 @@ public class MoveToNode extends Node {
         public Status update(float dt) {
             LocationComponent location = actor().getComponent(LocationComponent.class);
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
-            CharacterMovementComponent characterMovementComponent = actor().getComponent(CharacterMovementComponent.class);
 
-            // TODO: why radius instead of height?
             Vector3f adjustedMoveTarget = flexibleMovementComponent.target.toVector3f();
-//            adjustedMoveTarget.addY(characterMovementComponent.radius);
 
             Vector3f position = location.getWorldPosition();
-            if (position.distance(adjustedMoveTarget) < 0.1f &&
+            if (position.distance(adjustedMoveTarget) <= flexibleMovementComponent.targetTolerance &&
                     new Vector3i(position).distance(flexibleMovementComponent.target) == 0) {
                 return Status.SUCCESS;
             }

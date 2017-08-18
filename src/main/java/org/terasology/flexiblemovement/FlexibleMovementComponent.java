@@ -33,6 +33,11 @@ public final class FlexibleMovementComponent implements Component {
     // immediate movement target
     public Vector3i target = Vector3i.zero();
 
+    /**
+     * The maximum distance from a target before it is considered to be reached
+     */
+    public float targetTolerance = 0.1f;
+
     // an entity to take the goal position from
     private EntityRef pathGoalEntity = null;
 

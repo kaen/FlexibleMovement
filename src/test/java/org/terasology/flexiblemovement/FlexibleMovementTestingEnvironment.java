@@ -54,11 +54,15 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
 
     public void executeExample(String[] world, String[] path) {
         int airHeight = 41;
-        forceAndWaitForGeneration(new Vector3i(0, airHeight, 0));
+
         WorldProvider worldProvider = getHostContext().get(WorldProvider.class);
         Block air = getHostContext().get(BlockManager.class).getBlock("engine:air");
         Block dirt = getHostContext().get(BlockManager.class).getBlock("core:dirt");
-        Region3i extents = Region3i.createFromCenterExtents(new Vector3i(0, airHeight, 0), 0);
+        Region3i extents = getExtents(world, airHeight);
+
+        for (Vector3i pos : extents) {
+            forceAndWaitForGeneration(pos);
+        }
 
         // set blocks from world data
         for (int z = 0; z < world.length; z++) {
@@ -66,7 +70,6 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
             String row = world[z];
             int x = 0;
             for (char c : row.toCharArray()) {
-                extents.expandToContain(new Vector3i(x, y, z));
                 switch (c) {
                     case 'X':
                         worldProvider.setBlock(new Vector3i(x, y, z), air);
@@ -128,5 +131,34 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
             logger.warn("pos: {}", pos);
             return new Vector3i(pos).distance(stop) > 0;
         });
+    }
+
+    private Region3i getExtents(String[] world, int airHeight) {
+        Region3i extents = Region3i.createFromCenterExtents(new Vector3i(0, airHeight, 0), 0);
+        for (int z = 0; z < world.length; z++) {
+            int y = airHeight;
+            String row = world[z];
+            int x = 0;
+            for (char c : row.toCharArray()) {
+                extents = extents.expandToContain(new Vector3i(x, y, z));
+                switch (c) {
+                    case 'X':
+                        x += 1;
+                        break;
+                    case ' ':
+                        x += 1;
+                        break;
+                    case '|':
+                        y += 1;
+                        x = 0;
+                        break;
+                    default:
+                        x += 1;
+                        break;
+                }
+            }
+        }
+        extents = extents.expand(1);
+        return extents;
     }
 }

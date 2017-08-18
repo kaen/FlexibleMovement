@@ -23,6 +23,7 @@ import org.terasology.flexiblepathfinding.plugins.basic.WalkingPlugin;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.characters.MovementMode;
+import org.terasology.logic.characters.events.SetMovementModeEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector3f;
@@ -43,18 +44,15 @@ public class LeapingMovementPlugin extends MovementPlugin {
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
-        LocationComponent location = entity.getComponent(LocationComponent.class);
-        CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        Vector3f delta = new Vector3f(dest).sub(location.getWorldPosition());
+        Vector3f delta = getDelta(entity, dest);
+        float yaw = getYaw(delta);
+        long dt = getTime().getGameDeltaInMs();
 
-        float yaw = (float) Math.atan2(delta.x, delta.z);
+        CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         if(movement.mode != MovementMode.WALKING) {
-            movement.mode = MovementMode.WALKING;
-            entity.saveComponent(movement);
+            entity.send(new SetMovementModeEvent(MovementMode.WALKING));
         }
 
-        return new CharacterMoveInputEvent(sequence, 0, yaw * TeraMath.RAD_TO_DEG + 180, delta, false, true,
-                getTime()
-                .getGameDeltaInMs());
+        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, true, dt);
     }
 }
