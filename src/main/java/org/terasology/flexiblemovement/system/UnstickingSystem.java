@@ -15,6 +15,8 @@
  */
 package org.terasology.flexiblemovement.system;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
@@ -34,6 +36,9 @@ import org.terasology.world.WorldProvider;
 @Share(UnstickingSystem.class)
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class UnstickingSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
+    private static final float UNSTICK_DELTA = 1.0f;
+    private static final float UNSTICK_INTERVAL_MILLIS = 100;
+
     @In
     private EntityManager entityManager;
 
@@ -43,8 +48,8 @@ public class UnstickingSystem extends BaseComponentSystem implements UpdateSubsc
     @In
     private Time time;
 
-    private static float UNSTICK_INTERVAL_MILLIS = 5000;
     private float lastUnstick;
+    private Logger logger = LoggerFactory.getLogger(UnstickingSystem.class);
 
     @Override
     public void update(float delta) {
@@ -57,8 +62,9 @@ public class UnstickingSystem extends BaseComponentSystem implements UpdateSubsc
             LocationComponent locationComponent = entity.getComponent(LocationComponent.class);
             Vector3f pos = locationComponent.getWorldPosition();
             if(!worldProvider.getBlock(new Vector3i(pos)).isPenetrable()) {
-                pos.setY((float) Math.ceil(pos.y + 0.00001f));
-//                entity.send(new CharacterTeleportEvent(pos));
+                pos.addY(UNSTICK_DELTA);
+                entity.send(new CharacterTeleportEvent(pos));
+                logger.debug("Unsticking: {}", entity);
             }
         }
     }

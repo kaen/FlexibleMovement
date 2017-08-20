@@ -107,9 +107,9 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void simpleDiagonal() throws InterruptedException {
         executeExample(new String[]{
-                "X  |   ",
-                "X  | X ",
-                "XXX|   ",
+                "X  |X  ",
+                "X  |X  ",
+                "XXX|XXX"
         }, new String[]{
                 "?  |   ",
                 "1  |   ",
@@ -118,19 +118,19 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     }
 
     @Test
-    public void nonTrivial() throws InterruptedException {
+    public void corridor() throws InterruptedException {
         executeExample(new String[]{
-                "XXXXXXXXXXXXXXX",
-                "             XX",
-                "XXXXXXXXXXXXXXX",
-                "XXX            ",
-                "XXXXXXXXXXXXXXX",
+                "XXXXXXXXXXXXXXX|               ",
+                "X            XX|               ",
+                "X XXXXXXXXXXXXX|               ",
+                "XXX            |               ",
+                "               |               ",
         }, new String[]{
-                "?123456789abcd ",
-                "             e ",
-                "  qponmlkjihgf ",
-                "  r            ",
-                "  stuvwxyz!    ",
+                "?123456789abcd |               ",
+                "             e |               ",
+                "  qponmlkjihgf |               ",
+                "  !            |               ",
+                "               |               ",
         });
 
     }

@@ -72,7 +72,7 @@ public abstract class MovementPlugin {
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
 
         Vector3f delta = new Vector3f(dest).sub(location.getWorldPosition());
-        delta.div(movement.speedMultiplier);
+        delta.div(movement.speedMultiplier).div(getTime().getGameDelta());
         return delta;
     }
 }

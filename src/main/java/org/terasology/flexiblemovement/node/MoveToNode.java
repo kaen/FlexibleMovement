@@ -49,8 +49,6 @@ public class MoveToNode extends Node {
     }
 
     public class MoveToNodeTask extends Task {
-        private static final float UPDATE_INTERVAL_MILLIS = 0;
-
         @In private Time time;
         @In private WorldProvider world;
         @In private FlexibleMovementSystem flexibleMovementSystem;
@@ -71,10 +69,6 @@ public class MoveToNode extends Node {
             if (position.distance(adjustedMoveTarget) <= flexibleMovementComponent.targetTolerance &&
                     new Vector3i(position).distance(flexibleMovementComponent.target) == 0) {
                 return Status.SUCCESS;
-            }
-
-            if (time.getGameTimeInMs() < flexibleMovementComponent.lastInput + UPDATE_INTERVAL_MILLIS) {
-                return Status.RUNNING;
             }
 
             flexibleMovementComponent.sequenceNumber++;
@@ -101,7 +95,8 @@ public class MoveToNode extends Node {
                 );
             }
 
-            flexibleMovementSystem.enqueue(actor().getEntity(), result);
+            actor().getEntity().send(result);
+//            flexibleMovementSystem.enqueue(actor().getEntity(), result);
             flexibleMovementComponent.lastInput = time.getGameTimeInMs();
             flexibleMovementComponent.collidedHorizontally = false;
             actor().save(flexibleMovementComponent);
