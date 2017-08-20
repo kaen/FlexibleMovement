@@ -48,12 +48,13 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         // do nothing
     }
 
-    public void executeExample(String[] world, String[] path) {
+    public void executeExample(String[] world, String[] path, String ... movementTypes) {
         int airHeight = 41;
 
         WorldProvider worldProvider = getHostContext().get(WorldProvider.class);
         Block air = getHostContext().get(BlockManager.class).getBlock("engine:air");
         Block dirt = getHostContext().get(BlockManager.class).getBlock("core:dirt");
+        Block water = getHostContext().get(BlockManager.class).getBlock("core:water");
 
         Region3i extents = getPaddedExtents(world, airHeight);
 
@@ -78,6 +79,10 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
                         break;
                     case ' ':
                         worldProvider.setBlock(new Vector3i(x, y, z), dirt);
+                        x += 1;
+                        break;
+                    case '~':
+                        worldProvider.setBlock(new Vector3i(x, y, z), water);
                         x += 1;
                         break;
                     case '|':
@@ -122,6 +127,8 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         EntityRef entity = getHostContext().get(EntityManager.class).create("flexiblemovement:testcharacter");
         entity.send(new CharacterTeleportEvent(start.toVector3f()));
         entity.getComponent(FlexibleMovementComponent.class).setPathGoal(stop);
+        entity.getComponent(FlexibleMovementComponent.class).movementTypes.clear();
+        entity.getComponent(FlexibleMovementComponent.class).movementTypes.addAll(Sets.newHashSet(movementTypes));
 
         runUntil(()-> {
             return new Vector3i(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0;

@@ -17,13 +17,13 @@ package org.terasology.flexiblemovement;
 
 import org.junit.Test;
 
-public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironment {
+public class SwimmingMovementTest extends FlexibleMovementTestingEnvironment {
     @Test
     public void simpleStraight() throws InterruptedException {
         runTest(new String[]{
-                "X  ",
-                "X  ",
-                "XXX",
+                "~  ",
+                "~  ",
+                "~~~",
         }, new String[]{
                 "?  ",
                 "1  ",
@@ -34,22 +34,22 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void simpleLeap() throws InterruptedException {
         runTest(new String[]{
-                "X  |XXX|XXX",
-                "X  |XXX|XXX",
-                "XXX|XXX|XXX",
+                "~  |~~~|~~~",
+                "~  |~~~|~~~",
+                "~~~|~~~|~~~",
         }, new String[]{
-                "?  |123|XXX",
-                "   |  !|XXX",
-                "   |   |XXX"
+                "?  |123|~~~",
+                "   |  !|~~~",
+                "   |   |~~~"
         });
     }
 
     @Test
     public void simpleDiagonal() throws InterruptedException {
         runTest(new String[]{
-                "X  |X  ",
-                "X  |X  ",
-                "XXX|XXX"
+                "~  |~  ",
+                "~  |~  ",
+                "~~~|~~~"
         }, new String[]{
                 "?  |   ",
                 "1  |   ",
@@ -60,10 +60,10 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void corridor() throws InterruptedException {
         runTest(new String[]{
-                "XXXXXXXXXXXXXXX",
-                "X            XX",
-                "X XXXXXXXXXXXXX",
-                "XXX            ",
+                "~~~~~~~~~~~~~~~",
+                "~            ~~",
+                "~ ~~~~~~~~~~~~~",
+                "~~~            ",
                 "               ",
         }, new String[]{
                 "?123456789abcd ",
@@ -78,9 +78,9 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void threeDimensionalMoves() throws InterruptedException {
         runTest(new String[]{
-                "XXX|XX |   ",
-                "X X|XXX| XX",
-                "XXX| X | XX"
+                "~~~|~~ |   ",
+                "~ ~|~~~| ~~",
+                "~~~| ~ | ~~"
         }, new String[]{
                 "?  |   |   ",
                 "   | 1 |   ",
@@ -89,6 +89,6 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     }
 
     private void runTest(String[] world, String[] path) {
-        executeExample(world, path, "walking", "leaping");
+        executeExample(world, path, "swimming");
     }
 }

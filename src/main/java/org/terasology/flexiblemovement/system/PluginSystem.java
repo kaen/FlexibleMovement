@@ -55,6 +55,7 @@ public class PluginSystem extends BaseComponentSystem {
         registerMovementPlugin("walking", (entity)-> new WalkingMovementPlugin(worldProvider, time));
         registerMovementPlugin("leaping", (entity)-> new LeapingMovementPlugin(worldProvider, time));
         registerMovementPlugin("flying", (entity)-> new FlyingMovementPlugin(worldProvider, time));
+        registerMovementPlugin("swimming", (entity)-> new SwimmingMovementPlugin(worldProvider, time));
     }
 
     public void registerMovementPlugin(String name, Function<EntityRef, MovementPlugin> supplier) {
