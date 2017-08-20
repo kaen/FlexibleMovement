@@ -52,6 +52,7 @@ public class FlyingMovementPlugin extends MovementPlugin {
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         if(movement.mode != MovementMode.FLYING) {
             entity.send(new SetMovementModeEvent(MovementMode.FLYING));
+            movement.grounded = false;
         }
 
         return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, true, dt);

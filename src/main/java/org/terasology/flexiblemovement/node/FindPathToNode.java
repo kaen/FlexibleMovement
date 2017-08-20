@@ -27,6 +27,7 @@ import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -58,7 +59,7 @@ public class FindPathToNode extends Node {
             if(pathStatus == null) {
                 pathStatus = Status.RUNNING;
                 FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
-                Vector3i start = new Vector3i(actor().getComponent(LocationComponent.class).getWorldPosition());
+                Vector3i start = new Vector3i(actor().getComponent(LocationComponent.class).getWorldPosition(), RoundingMode.HALF_UP);
                 Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).getPathGoal();
 
                 if (start == null || goal == null) {

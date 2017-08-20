@@ -26,6 +26,7 @@ import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class CompositeMovementPlugin extends MovementPlugin {
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
-        Vector3i from = new Vector3i(entity.getComponent(LocationComponent.class).getWorldPosition());
+        Vector3i from = new Vector3i(entity.getComponent(LocationComponent.class).getWorldPosition(), RoundingMode.HALF_UP);
         Vector3i to = new Vector3i(dest);
         for (MovementPlugin plugin : plugins) {
             if (plugin.getJpsPlugin(entity).isReachable(to, from)) {

@@ -51,6 +51,7 @@ public class LeapingMovementPlugin extends MovementPlugin {
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         if(movement.mode != MovementMode.WALKING) {
             entity.send(new SetMovementModeEvent(MovementMode.WALKING));
+            movement.grounded = false;
         }
 
         return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, true, dt);
