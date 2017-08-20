@@ -19,66 +19,6 @@ import org.junit.Test;
 
 public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironment {
     @Test
-    public void stairs2() throws InterruptedException {
-        executeExample(new String[]{
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXXXXXX",
-                "XXX XXXXX|  XX     |   X     |XXX XXXXX|  XX     |   X     |XXX XXXXX",
-                "XXX XXXXX|         |   X     |XXXXXXXXX|         |   X     |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-        }, new String[]{
-                "?        |         |         |         |         |         |         ",
-                " 1       |         |         |         |         |         |         ",
-                "  2      |         |         |         |         |         |         ",
-                "  3      |         |         |         |         |         |         ",
-                "  4      |   5     |         |  !      |         |         |         ",
-                "         |         |   6     |  7      |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-        });
-    }
-
-    @Test
-    public void stairsClosed2() throws InterruptedException {
-        executeFailingExample(new String[]{
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXX XXXXX|         |         |XXXXX XXX",
-                "XXX XXXXX|   X     |         |XXX XXXXX|     X   |         |XXXXX XXX",
-                "XXX XXXXX|         |   X     |XXXXXXXXX|         |     X   |XXXXX XXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-                "XXXXXXXXX|         |         |XXXXXXXXX|         |         |XXXXXXXXX",
-        }, new String[]{
-                "?        |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |         ",
-                "         |         |         |         |         |         |        !",
-        });
-    }
-
-    @Test
-    public void simple() throws InterruptedException {
-        executeExample(new String[]{
-                "X  |   ",
-                "X  |   ",
-                "XXX|   ",
-        }, new String[]{
-                "?  |   ",
-                "1  |   ",
-                "23!|   "
-        });
-    }
-
-
-    @Test
     public void simpleStraight() throws InterruptedException {
         executeExample(new String[]{
                 "X  ",
@@ -94,13 +34,13 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void simpleLeap() throws InterruptedException {
         executeExample(new String[]{
-                "X  |XXX",
-                "X  |XXX",
-                "XXX|XXX",
+                "X  |XXX|XXX",
+                "X  |XXX|XXX",
+                "XXX|XXX|XXX",
         }, new String[]{
-                "?  |123",
-                "   |  !",
-                "   |   "
+                "?  |123|XXX",
+                "   |  !|XXX",
+                "   |   |XXX"
         });
     }
 
@@ -120,17 +60,17 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void corridor() throws InterruptedException {
         executeExample(new String[]{
-                "XXXXXXXXXXXXXXX|               ",
-                "X            XX|               ",
-                "X XXXXXXXXXXXXX|               ",
-                "XXX            |               ",
-                "               |               ",
+                "XXXXXXXXXXXXXXX",
+                "X            XX",
+                "X XXXXXXXXXXXXX",
+                "XXX            ",
+                "               ",
         }, new String[]{
-                "?123456789abcd |               ",
-                "             e |               ",
-                "  qponmlkjihgf |               ",
-                "  !            |               ",
-                "               |               ",
+                "?123456789abcd ",
+                "             e ",
+                "  qponmlkjihgf ",
+                "  !            ",
+                "               ",
         });
 
     }
@@ -145,60 +85,6 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
                 "?  |   |   ",
                 "   | 1 |   ",
                 "   |   |  !"
-        });
-    }
-
-
-    @Test
-    public void startInBox() throws InterruptedException {
-        executeFailingExample(new String[]{
-                "   X|   X",
-                " X X|   X",
-                "   X|   X"
-        }, new String[]{
-                "    |    ",
-                " ? !|    ",
-                "    |    "
-        });
-    }
-
-    @Test
-    public void endInBox() throws InterruptedException {
-        executeFailingExample(new String[]{
-                "   X|   X",
-                " X X|   X",
-                "   X|   X"
-        }, new String[]{
-                "    |    ",
-                " ! ?|    ",
-                "    |    "
-        });
-    }
-
-    @Test
-    public void startUnwalkable() throws InterruptedException {
-        executeFailingExample(new String[]{
-                " XXX",
-                " XXX",
-                " XXX"
-        }, new String[]{
-                "   !",
-                "?   ",
-                "    "
-        });
-    }
-
-
-    @Test
-    public void endUnwalkable() throws InterruptedException {
-        executeFailingExample(new String[]{
-                " XXX",
-                " XXX",
-                " XXX"
-        }, new String[]{
-                "    ",
-                "!  ?",
-                "    "
         });
     }
 }

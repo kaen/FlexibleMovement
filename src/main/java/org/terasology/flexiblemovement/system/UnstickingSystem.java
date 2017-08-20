@@ -36,7 +36,7 @@ import org.terasology.world.WorldProvider;
 @Share(UnstickingSystem.class)
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class UnstickingSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
-    private static final float UNSTICK_DELTA = 1.0f;
+    private static final float UNSTICK_DELTA = 0.3f;
     private static final float UNSTICK_INTERVAL_MILLIS = 100;
 
     @In

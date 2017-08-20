@@ -15,13 +15,11 @@
  */
 package org.terasology.flexiblemovement;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.prefab.PrefabManager;
 import org.terasology.logic.characters.CharacterTeleportEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.Region3i;
@@ -31,8 +29,6 @@ import org.terasology.moduletestingenvironment.ModuleTestingEnvironment;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
-import org.terasology.world.generation.World;
-import org.terasology.world.generator.WorldGenerator;
 
 import java.util.Set;
 
@@ -58,11 +54,16 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         WorldProvider worldProvider = getHostContext().get(WorldProvider.class);
         Block air = getHostContext().get(BlockManager.class).getBlock("engine:air");
         Block dirt = getHostContext().get(BlockManager.class).getBlock("core:dirt");
-        Region3i extents = getExtents(world, airHeight);
+
+        Region3i extents = getPaddedExtents(world, airHeight);
 
         for (Vector3i pos : extents) {
             forceAndWaitForGeneration(pos);
         }
+
+//        for (Vector3i pos : extents) {
+//            worldProvider.setBlock(pos, dirt);
+//        }
 
         // set blocks from world data
         for (int z = 0; z < world.length; z++) {
@@ -119,7 +120,7 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         }
 
         EntityRef entity = getHostContext().get(EntityManager.class).create("flexiblemovement:testcharacter");
-        entity.send(new CharacterTeleportEvent(start.toVector3f().addY(0.5f)));
+        entity.send(new CharacterTeleportEvent(start.toVector3f()));
         entity.getComponent(FlexibleMovementComponent.class).setPathGoal(stop);
 
         runUntil(()-> {
@@ -133,7 +134,7 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         });
     }
 
-    private Region3i getExtents(String[] world, int airHeight) {
+    private Region3i getPaddedExtents(String[] world, int airHeight) {
         Region3i extents = Region3i.createFromCenterExtents(new Vector3i(0, airHeight, 0), 0);
         for (int z = 0; z < world.length; z++) {
             int y = airHeight;
