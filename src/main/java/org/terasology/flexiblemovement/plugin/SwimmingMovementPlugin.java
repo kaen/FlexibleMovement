@@ -50,7 +50,6 @@ public class SwimmingMovementPlugin extends MovementPlugin {
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         if(movement.mode != MovementMode.SWIMMING) {
             entity.send(new SetMovementModeEvent(MovementMode.SWIMMING));
-            movement.grounded = false;
         }
 
         return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, true, dt);

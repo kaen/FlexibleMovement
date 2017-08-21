@@ -33,11 +33,13 @@ import org.terasology.registry.In;
 import org.terasology.registry.Share;
 import org.terasology.world.WorldProvider;
 
+import java.math.RoundingMode;
+
 @Share(UnstickingSystem.class)
 @RegisterSystem(RegisterMode.AUTHORITY)
 public class UnstickingSystem extends BaseComponentSystem implements UpdateSubscriberSystem {
-    private static final float UNSTICK_DELTA = 0.3f;
-    private static final float UNSTICK_INTERVAL_MILLIS = 100;
+    private static final float UNSTICK_DELTA = 1.0f;
+    private static final float UNSTICK_INTERVAL_MILLIS = 1000;
 
     @In
     private EntityManager entityManager;
@@ -62,7 +64,7 @@ public class UnstickingSystem extends BaseComponentSystem implements UpdateSubsc
             LocationComponent locationComponent = entity.getComponent(LocationComponent.class);
             Vector3f pos = locationComponent.getWorldPosition();
             if(!worldProvider.getBlock(new Vector3i(pos)).isPenetrable()) {
-                pos.addY(UNSTICK_DELTA);
+                pos.setY((float) Math.ceil(pos.y));
                 entity.send(new CharacterTeleportEvent(pos));
                 logger.debug("Unsticking: {}", entity);
             }
