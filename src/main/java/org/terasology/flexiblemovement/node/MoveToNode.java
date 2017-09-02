@@ -95,7 +95,6 @@ public class MoveToNode extends Node {
             }
 
             actor().getEntity().send(result);
-//            flexibleMovementSystem.enqueue(actor().getEntity(), result);
             flexibleMovementComponent.lastInput = time.getGameTimeInMs();
             flexibleMovementComponent.collidedHorizontally = false;
             actor().save(flexibleMovementComponent);

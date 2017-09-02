@@ -25,6 +25,7 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
+import org.terasology.flexiblemovement.FlexibleMovementHelper;
 import org.terasology.logic.characters.CharacterTeleportEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
@@ -63,9 +64,9 @@ public class UnstickingSystem extends BaseComponentSystem implements UpdateSubsc
         for (EntityRef entity : entityManager.getEntitiesWith(FlexibleMovementComponent.class, LocationComponent.class)) {
             LocationComponent locationComponent = entity.getComponent(LocationComponent.class);
             Vector3f pos = locationComponent.getWorldPosition();
-            if(!worldProvider.getBlock(new Vector3i(pos)).isPenetrable()) {
+            if(!worldProvider.getBlock(FlexibleMovementHelper.posToBlock(pos)).isPenetrable()) {
                 pos.setY((float) Math.ceil(pos.y));
-                entity.send(new CharacterTeleportEvent(pos));
+//                entity.send(new CharacterTeleportEvent(pos));
                 logger.debug("Unsticking: {}", entity);
             }
         }

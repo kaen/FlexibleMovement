@@ -28,6 +28,7 @@ import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
 
 import java.util.List;
+import java.util.Vector;
 
 public final class FlexibleMovementComponent implements Component {
     // immediate movement target
@@ -71,7 +72,9 @@ public final class FlexibleMovementComponent implements Component {
 
     public Vector3i getPathGoal() {
         if(pathGoalEntity != null && pathGoalEntity.getComponent(LocationComponent.class) != null) {
-            pathGoalPosition.set(new Vector3i(pathGoalEntity.getComponent(LocationComponent.class).getWorldPosition()));
+            Vector3f worldPosition = pathGoalEntity.getComponent(LocationComponent.class).getWorldPosition();
+            Vector3i pos = FlexibleMovementHelper.posToBlock(worldPosition);
+            pathGoalPosition.set(pos);
         }
         return pathGoalPosition;
     }

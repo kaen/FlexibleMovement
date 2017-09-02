@@ -18,6 +18,7 @@ package org.terasology.flexiblemovement.plugin;
 import com.google.common.collect.Lists;
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.flexiblemovement.FlexibleMovementHelper;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.CompositePlugin;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
@@ -57,7 +58,7 @@ public class CompositeMovementPlugin extends MovementPlugin {
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
-        Vector3i from = new Vector3i(entity.getComponent(LocationComponent.class).getWorldPosition(), RoundingMode.HALF_UP);
+        Vector3i from = FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition());
         Vector3i to = new Vector3i(dest);
         for (MovementPlugin plugin : plugins) {
             if (plugin.getJpsPlugin(entity).isReachable(to, from)) {

@@ -130,14 +130,12 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         entity.getComponent(FlexibleMovementComponent.class).movementTypes.clear();
         entity.getComponent(FlexibleMovementComponent.class).movementTypes.addAll(Sets.newHashSet(movementTypes));
 
-        runUntil(()-> {
-            return new Vector3i(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0;
-        });
+        runUntil(()-> FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0);
 
         runWhile(()-> {
             Vector3f pos = entity.getComponent(LocationComponent.class).getWorldPosition();
             logger.warn("pos: {}", pos);
-            return new Vector3i(pos).distance(stop) > 0;
+            return FlexibleMovementHelper.posToBlock(pos).distance(stop) > 0;
         });
     }
 
