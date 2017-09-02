@@ -62,8 +62,10 @@ public class MoveToNode extends Node {
         public Status update(float dt) {
             LocationComponent location = actor().getComponent(LocationComponent.class);
             FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
+            CharacterMovementComponent characterMovementComponent = actor().getComponent(CharacterMovementComponent.class);
 
             Vector3f adjustedMoveTarget = flexibleMovementComponent.target.toVector3f();
+            adjustedMoveTarget.addY(characterMovementComponent.height / 2.0f - 0.5f);
 
             Vector3f position = location.getWorldPosition();
             if (position.distance(adjustedMoveTarget) <= flexibleMovementComponent.targetTolerance) {

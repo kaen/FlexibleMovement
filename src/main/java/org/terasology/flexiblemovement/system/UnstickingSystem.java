@@ -65,7 +65,7 @@ public class UnstickingSystem extends BaseComponentSystem implements UpdateSubsc
             LocationComponent locationComponent = entity.getComponent(LocationComponent.class);
             Vector3f pos = locationComponent.getWorldPosition();
             if(!worldProvider.getBlock(FlexibleMovementHelper.posToBlock(pos)).isPenetrable()) {
-                pos.setY((float) Math.ceil(pos.y));
+                pos.setY(0.5f + (float) Math.round(pos.y));
 //                entity.send(new CharacterTeleportEvent(pos));
                 logger.debug("Unsticking: {}", entity);
             }

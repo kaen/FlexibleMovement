@@ -16,6 +16,7 @@
 package org.terasology.flexiblemovement.node;
 
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
+import org.terasology.flexiblemovement.FlexibleMovementHelper;
 import org.terasology.flexiblemovement.system.PluginSystem;
 import org.terasology.flexiblepathfinding.JPSConfig;
 import org.terasology.flexiblepathfinding.PathfinderCallback;
@@ -59,7 +60,7 @@ public class FindPathToNode extends Node {
             if(pathStatus == null) {
                 pathStatus = Status.RUNNING;
                 FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
-                Vector3i start = new Vector3i(actor().getComponent(LocationComponent.class).getWorldPosition(), RoundingMode.HALF_UP);
+                Vector3i start = FlexibleMovementHelper.posToBlock(actor().getComponent(LocationComponent.class).getWorldPosition());
                 Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).getPathGoal();
 
                 if (start == null || goal == null) {

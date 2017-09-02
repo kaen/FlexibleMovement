@@ -25,9 +25,6 @@ import java.math.RoundingMode;
  */
 public class FlexibleMovementHelper {
     public static Vector3i posToBlock(Vector3f pos) {
-        int y = (int) Math.floor(pos.y);
-        Vector3i result = new Vector3i(pos, RoundingMode.HALF_UP);
-        result.y = y;
-        return result;
+        return new Vector3i(pos, RoundingMode.HALF_UP);
     }
 }
