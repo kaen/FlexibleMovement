@@ -59,7 +59,7 @@ public class CompositeMovementPlugin extends MovementPlugin {
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
         Vector3i from = FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition());
-        Vector3i to = new Vector3i(dest);
+        Vector3i to = FlexibleMovementHelper.posToBlock(dest);
         for (MovementPlugin plugin : plugins) {
             if (plugin.getJpsPlugin(entity).isReachable(to, from)) {
                 return plugin.move(entity, dest, sequence);
