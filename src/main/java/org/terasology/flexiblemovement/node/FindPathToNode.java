@@ -24,6 +24,7 @@ import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.logic.behavior.tree.Node;
 import org.terasology.logic.behavior.tree.Status;
 import org.terasology.logic.behavior.tree.Task;
+import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
@@ -60,6 +61,7 @@ public class FindPathToNode extends Node {
             if(pathStatus == null) {
                 pathStatus = Status.RUNNING;
                 FlexibleMovementComponent flexibleMovementComponent = actor().getComponent(FlexibleMovementComponent.class);
+                CharacterMovementComponent characterMovementComponent = actor().getComponent(CharacterMovementComponent.class);
                 Vector3i start = FlexibleMovementHelper.posToBlock(actor().getComponent(LocationComponent.class).getWorldPosition());
                 Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).getPathGoal();
 
@@ -73,6 +75,10 @@ public class FindPathToNode extends Node {
                 config.maxDepth = 150;
                 config.goalDistance = flexibleMovementComponent.pathGoalDistance;
                 config.plugin = pluginSystem.getMovementPlugin(actor().getEntity()).getJpsPlugin(actor().getEntity());
+
+                config.plugin.setVerticalPadding((int) characterMovementComponent.height / 2);
+                config.plugin.setHorizontalPadding((int) characterMovementComponent.radius);
+
                 pathfinderSystem.requestPath(config, new PathfinderCallback() {
                     @Override
                     public void pathReady(List<Vector3i> path, Vector3i target) {

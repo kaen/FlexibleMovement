@@ -20,12 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.characters.CharacterTeleportEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.moduletestingenvironment.ModuleTestingEnvironment;
+import org.terasology.physics.engine.PhysicsEngine;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
@@ -34,6 +36,7 @@ import java.util.Set;
 
 public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(FlexibleMovementTestingEnvironment.class);
+
     @Override
     public Set<String> getDependencies() {
         return Sets.newHashSet("FlexibleMovement");
@@ -49,6 +52,11 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
     }
 
     public void executeExample(String[] world, String[] path, String ... movementTypes) {
+        executeExample(world, path, 0.9f, 0.3f, movementTypes);
+
+    }
+
+    public void executeExample(String[] world, String[] path, float height, float radius, String ... movementTypes) {
         int airHeight = 41;
 
         WorldProvider worldProvider = getHostContext().get(WorldProvider.class);
@@ -62,9 +70,9 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
             forceAndWaitForGeneration(pos);
         }
 
-//        for (Vector3i pos : extents) {
-//            worldProvider.setBlock(pos, dirt);
-//        }
+        for (Vector3i pos : extents) {
+            worldProvider.setBlock(pos, dirt);
+        }
 
         // set blocks from world data
         for (int z = 0; z < world.length; z++) {
@@ -129,6 +137,14 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         entity.getComponent(FlexibleMovementComponent.class).setPathGoal(stop);
         entity.getComponent(FlexibleMovementComponent.class).movementTypes.clear();
         entity.getComponent(FlexibleMovementComponent.class).movementTypes.addAll(Sets.newHashSet(movementTypes));
+
+        entity.getComponent(CharacterMovementComponent.class).height = height;
+        entity.getComponent(CharacterMovementComponent.class).radius = radius;
+
+        // after updating character collision stuff we have to remake the collider, based on the playerHeight command
+        // TODO there should probably be a helper for this instead
+        getHostContext().get(PhysicsEngine.class).removeCharacterCollider(entity);
+        getHostContext().get(PhysicsEngine.class).getCharacterCollider(entity);
 
         runUntil(()-> FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0);
 
