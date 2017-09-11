@@ -70,8 +70,8 @@ public class MoveToNode extends Node {
             float halfHeight = characterMovementComponent.height / 2.0f;
 
             // this is the result of experimentation and some penwork
-            float adjustedY = (float) Math.ceil(adjustedMoveTarget.y - halfHeight) + halfHeight - 0.5f;
-            adjustedMoveTarget.setY(adjustedY);
+//            float adjustedY = (float) Math.ceil(adjustedMoveTarget.y - halfHeight) + halfHeight - 0.5f;
+//            adjustedMoveTarget.setY(adjustedY);
 
             Vector3f position = location.getWorldPosition();
             if (position.distance(adjustedMoveTarget) <= flexibleMovementComponent.targetTolerance) {

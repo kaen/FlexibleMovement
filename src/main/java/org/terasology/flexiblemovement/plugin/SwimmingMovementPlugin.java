@@ -19,6 +19,7 @@ import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.FlyingPlugin;
+import org.terasology.flexiblepathfinding.plugins.basic.SwimmingPlugin;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.characters.CharacterMovementComponent;
 import org.terasology.logic.characters.MovementMode;
@@ -37,7 +38,8 @@ public class SwimmingMovementPlugin extends MovementPlugin {
 
     @Override
     public JPSPlugin getJpsPlugin(EntityRef entity) {
-        return new FlyingPlugin(getWorld());
+        CharacterMovementComponent component = entity.getComponent(CharacterMovementComponent.class);
+        return new SwimmingPlugin(getWorld(), component.radius, component.height / 2.0f);
     }
 
     @Override

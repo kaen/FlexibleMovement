@@ -37,6 +37,19 @@ public class LargeLeapingMovementTest extends FlexibleMovementTestingEnvironment
         });
     }
 
+    @Test
+    public void steps() {
+        runTest(new String[]{
+                "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
+                "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
+                "XXX      |XXXXX    |XXXXXXX  |XXXXXXXXX",
+        }, new String[]{
+                "         |         |         |         ",
+                "         | ?       | 12!     |         ",
+                "         |         |         |         ",
+        });
+    }
+
     private void runTest(String[] world, String[] path) {
         executeExample(world, path, 2.7f, 1.2f, "walking", "leaping");
     }

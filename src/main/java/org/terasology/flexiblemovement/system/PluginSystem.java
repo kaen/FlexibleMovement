@@ -91,7 +91,8 @@ public class PluginSystem extends BaseComponentSystem {
                 logger.warn("Unknown or invalid MovementPlugin requested: {}", uri);
             }
 
-            plugins.add(registeredPlugins.get(uri).apply(entity));
+            MovementPlugin newPlugin = registeredPlugins.get(uri).apply(entity);
+            plugins.add(newPlugin);
 
         }
         return new CompositeMovementPlugin(worldProvider, time, plugins);

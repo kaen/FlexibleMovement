@@ -76,9 +76,6 @@ public class FindPathToNode extends Node {
                 config.goalDistance = flexibleMovementComponent.pathGoalDistance;
                 config.plugin = pluginSystem.getMovementPlugin(actor().getEntity()).getJpsPlugin(actor().getEntity());
 
-                config.plugin.setVerticalPadding((int) characterMovementComponent.height / 2);
-                config.plugin.setHorizontalPadding((int) characterMovementComponent.radius);
-
                 pathfinderSystem.requestPath(config, new PathfinderCallback() {
                     @Override
                     public void pathReady(List<Vector3i> path, Vector3i target) {

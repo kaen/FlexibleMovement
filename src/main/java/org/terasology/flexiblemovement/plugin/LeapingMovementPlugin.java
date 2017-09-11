@@ -18,6 +18,7 @@ package org.terasology.flexiblemovement.plugin;
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
+import org.terasology.flexiblepathfinding.plugins.basic.FlyingPlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.LeapingPlugin;
 import org.terasology.flexiblepathfinding.plugins.basic.WalkingPlugin;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
@@ -39,8 +40,8 @@ public class LeapingMovementPlugin extends MovementPlugin {
 
     @Override
     public JPSPlugin getJpsPlugin(EntityRef entity) {
-        return new LeapingPlugin(getWorld());
-    }
+        CharacterMovementComponent component = entity.getComponent(CharacterMovementComponent.class);
+        return new LeapingPlugin(getWorld(), component.radius, component.height / 2.0f);    }
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {

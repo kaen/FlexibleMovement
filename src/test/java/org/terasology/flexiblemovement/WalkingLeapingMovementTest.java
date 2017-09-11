@@ -34,13 +34,11 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void simpleLeap() throws InterruptedException {
         runTest(new String[]{
-                "X  |XXX|XXX",
-                "X  |XXX|XXX",
-                "XXX|XXX|XXX",
+                "X  |XXX|XXX|XXX",
+                "X  |XXX|XXX|XXX",
         }, new String[]{
-                "?  |123|XXX",
-                "   |  !|XXX",
-                "   |   |XXX"
+                "?  |123|XXX|XXX",
+                "   |  !|XXX|XXX",
         });
     }
 

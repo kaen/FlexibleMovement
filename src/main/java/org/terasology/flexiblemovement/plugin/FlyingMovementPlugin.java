@@ -39,7 +39,8 @@ public class FlyingMovementPlugin extends MovementPlugin {
 
     @Override
     public JPSPlugin getJpsPlugin(EntityRef entity) {
-        return new FlyingPlugin(getWorld());
+        CharacterMovementComponent component = entity.getComponent(CharacterMovementComponent.class);
+        return new FlyingPlugin(getWorld(), component.radius, component.height / 2.0f);
     }
 
     @Override
