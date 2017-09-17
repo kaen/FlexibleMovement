@@ -59,11 +59,11 @@ public class ValidatePathNode extends Node {
                 return Status.FAILURE;
             }
 
-            for(Vector3i pos : actor().getComponent(FlexibleMovementComponent.class).getPath()) {
-                if(!pathfindingPlugin.isWalkable(pos)) {
-                    return Status.FAILURE;
-                }
-            }
+//            for(Vector3i pos : actor().getComponent(FlexibleMovementComponent.class).getPath()) {
+//                if(!pathfindingPlugin.isWalkable(pos)) {
+//                    return Status.FAILURE;
+//                }
+//            }
             return Status.SUCCESS;
         }
 

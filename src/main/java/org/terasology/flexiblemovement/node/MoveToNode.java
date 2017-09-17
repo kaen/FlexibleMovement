@@ -67,7 +67,6 @@ public class MoveToNode extends Node {
             // we need to translate the movement target to an expected real world position
             // in practice we just need to adjust the Y so that it's resting on top of the block at the right height
             Vector3f adjustedMoveTarget = flexibleMovementComponent.target.toVector3f();
-            float halfHeight = characterMovementComponent.height / 2.0f;
 
             // this is the result of experimentation and some penwork
 //            float adjustedY = (float) Math.ceil(adjustedMoveTarget.y - halfHeight) + halfHeight - 0.5f;

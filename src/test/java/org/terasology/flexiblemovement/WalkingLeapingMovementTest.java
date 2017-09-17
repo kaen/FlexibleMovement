@@ -86,6 +86,15 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
         });
     }
 
+    @Test
+    public void jumpOver() throws InterruptedException {
+        runTest(new String[]{
+                "X X|XXX|XXX|XXX"
+        }, new String[]{
+                "? !|123|   |   "
+        });
+    }
+
     private void runTest(String[] world, String[] path) {
         executeExample(world, path, "walking", "leaping");
     }

@@ -41,7 +41,7 @@ public class LeapingMovementPlugin extends MovementPlugin {
     @Override
     public JPSPlugin getJpsPlugin(EntityRef entity) {
         CharacterMovementComponent component = entity.getComponent(CharacterMovementComponent.class);
-        return new LeapingPlugin(getWorld(), component.radius, component.height / 2.0f);    }
+        return new LeapingPlugin(getWorld(), component.radius * 2.0f, component.height);    }
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
