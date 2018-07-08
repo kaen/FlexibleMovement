@@ -46,6 +46,6 @@ public class MoveAlongPathNode extends BaseAction {
 
         actor.save(movement);
 
-        return BehaviorState.FAILURE;
+        return BehaviorState.RUNNING;
     }
 }

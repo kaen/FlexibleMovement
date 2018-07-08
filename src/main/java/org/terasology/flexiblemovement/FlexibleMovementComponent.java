@@ -54,7 +54,7 @@ public final class FlexibleMovementComponent implements Component {
     // current index along path above
     private int pathIndex = 0;
 
-    public List<String> movementTypes = Lists.newArrayList("walking", "jumping");
+    public List<String> movementTypes = Lists.newArrayList("walking", "leaping");
     public boolean collidedHorizontally;
     public float lastInput;
     public int sequenceNumber;

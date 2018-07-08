@@ -1,11 +1,6 @@
 {
     "sequence": [
         {
-            "timeout": {
-                "time": 0.7
-            }
-        },
-        {
             "lookup" : {
                 "tree" : "FlexibleMovement:naiveMoveTo"
             }

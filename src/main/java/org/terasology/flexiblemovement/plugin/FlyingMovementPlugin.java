@@ -55,7 +55,7 @@ public class FlyingMovementPlugin extends MovementPlugin {
             entity.send(new SetMovementModeEvent(MovementMode.FLYING));
         }
 
-        return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, true, dt);
+        return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, false,true, dt);
     }
 
     private float getPitch(Vector3f delta) {

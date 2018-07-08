@@ -15,6 +15,7 @@
  */
 package org.terasology.flexiblemovement.node;
 
+import org.terasology.context.Context;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
 import org.terasology.flexiblemovement.FlexibleMovementHelper;
 import org.terasology.flexiblemovement.system.PluginSystem;
@@ -38,17 +39,19 @@ import java.util.List;
  */
 @BehaviorAction(name = "find_path_to")
 public class FindPathToNode extends BaseAction {
-    BehaviorState pathStatus = null;
-    List<Vector3i> pathResult = null;
-    @In
-    PathfinderSystem pathfinderSystem;
+    private BehaviorState pathStatus = null;
+    private List<Vector3i> pathResult = null;
 
     @In
-    PluginSystem pluginSystem;
+    private Context context;
+
+    private PathfinderSystem pathfinderSystem;
+    private PluginSystem pluginSystem;
 
     @Override
     public void construct(Actor actor) {
-
+        pluginSystem = context.get(PluginSystem.class);
+        pathfinderSystem = context.get(PathfinderSystem.class);
     }
 
     @Override
@@ -65,21 +68,19 @@ public class FindPathToNode extends BaseAction {
 
             JPSConfig config = new JPSConfig(start, goal);
             config.useLineOfSight = false;
-            config.maxTime = 0.25f;
+            config.maxTime = 10f;
             config.maxDepth = 150;
             config.goalDistance = flexibleMovementComponent.pathGoalDistance;
             config.plugin = pluginSystem.getMovementPlugin(actor.getEntity()).getJpsPlugin(actor.getEntity());
+            config.requester = actor.getEntity();
 
-            pathfinderSystem.requestPath(config, new PathfinderCallback() {
-                @Override
-                public void pathReady(List<Vector3i> path, Vector3i target) {
-                    if (path == null || path.size() == 0) {
-                        pathStatus = BehaviorState.FAILURE;
-                        return;
-                    }
-                    pathStatus = BehaviorState.SUCCESS;
-                    pathResult = path;
+            pathfinderSystem.requestPath(config, (path, target) -> {
+                if (path == null || path.size() == 0) {
+                    pathStatus = BehaviorState.FAILURE;
+                    return;
                 }
+                pathStatus = BehaviorState.SUCCESS;
+                pathResult = path;
             });
         }
 

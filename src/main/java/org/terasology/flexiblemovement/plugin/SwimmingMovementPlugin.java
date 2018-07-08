@@ -50,7 +50,7 @@ public class SwimmingMovementPlugin extends MovementPlugin {
         float pitch = getPitch(delta);
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, movement.grounded, dt);
+        return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, false, movement.grounded, dt);
     }
 
     private float getPitch(Vector3f delta) {

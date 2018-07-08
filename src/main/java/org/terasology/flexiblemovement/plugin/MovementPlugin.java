@@ -24,7 +24,6 @@ import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.TeraMath;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.world.WorldProvider;
-import org.terasology.world.generation.World;
 
 public abstract class MovementPlugin {
     private WorldProvider world;

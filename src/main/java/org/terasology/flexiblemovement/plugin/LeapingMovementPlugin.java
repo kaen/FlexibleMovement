@@ -50,6 +50,6 @@ public class LeapingMovementPlugin extends MovementPlugin {
         long dt = getTime().getGameDeltaInMs();
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, true, dt);
+        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false,true, dt);
     }
 }

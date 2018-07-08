@@ -1,7 +1,7 @@
 {
   "BehaviorNode": {
-    "type": "MoveToNode",
-    "name": "Move To",
+    "type": "FlexibleMoveToNode",
+    "name": "Flexible Move To",
     "category": "movement",
     "shape": "rect",
     "description": "Move to this entity's immediate move target using the FlexibleMovement mode",

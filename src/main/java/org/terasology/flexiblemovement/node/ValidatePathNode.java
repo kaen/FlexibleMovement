@@ -33,27 +33,27 @@ import org.terasology.registry.In;
  */
 @BehaviorAction(name = "validate_path")
 public class ValidatePathNode extends BaseAction {
-        @In
-        private PathfinderSystem system;
-        @In
-        private PluginSystem pluginSystem;
-        @In
-        private FlexibleMovementSystem flexibleMovementSystem;
+    @In
+    private PathfinderSystem system;
+    @In
+    private PluginSystem pluginSystem;
+    @In
+    private FlexibleMovementSystem flexibleMovementSystem;
 
-        @Override
+    @Override
     public BehaviorState modify(Actor actor, BehaviorState result) {
 
-            FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
-            JPSPlugin pathfindingPlugin = pluginSystem.getMovementPlugin(actor.getEntity()).getJpsPlugin(actor.getEntity());
-            if(flexibleMovementComponent == null || pathfindingPlugin == null) {
-                return BehaviorState.FAILURE;
-            }
+        FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
+        JPSPlugin pathfindingPlugin = pluginSystem.getMovementPlugin(actor.getEntity()).getJpsPlugin(actor.getEntity());
+        if (flexibleMovementComponent == null || pathfindingPlugin == null) {
+            return BehaviorState.FAILURE;
+        }
 
 //            for(Vector3i pos : actor().getComponent(FlexibleMovementComponent.class).getPath()) {
 //                if(!pathfindingPlugin.isWalkable(pos)) {
 //                    return Status.FAILURE;
 //                }
 //            }
-            return BehaviorState.SUCCESS;
-        }
+        return BehaviorState.SUCCESS;
+    }
 }
