@@ -48,7 +48,7 @@ public class FlexibleMovementDebugRenderSystem extends BaseComponentSystem imple
     @Override
     public void renderOverlay() {
         selectionRenderer.beginRenderOverlay();
-        for (EntityRef entity : entityManager.getEntitiesWith(FlexibleMovementComponent.class)){
+        for (EntityRef entity : entityManager.getEntitiesWith(FlexibleMovementComponent.class)) {
             FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
             for (Vector3i pos : flexibleMovementComponent.getPath()) {
                 selectionRenderer.renderMark2(pos);
@@ -64,11 +64,6 @@ public class FlexibleMovementDebugRenderSystem extends BaseComponentSystem imple
 
     @Override
     public void renderAlphaBlend() {
-
-    }
-
-    @Override
-    public void renderFirstPerson() {
 
     }
 

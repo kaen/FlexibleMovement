@@ -17,10 +17,10 @@ package org.terasology.flexiblemovement.node;
 
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
-import org.terasology.logic.behavior.tree.Node;
-import org.terasology.logic.behavior.tree.Status;
-import org.terasology.logic.behavior.tree.Task;
-import org.terasology.logic.location.LocationComponent;
+import org.terasology.logic.behavior.BehaviorAction;
+import org.terasology.logic.behavior.core.Actor;
+import org.terasology.logic.behavior.core.BaseAction;
+import org.terasology.logic.behavior.core.BehaviorState;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 import org.terasology.world.WorldProvider;
@@ -32,41 +32,31 @@ import java.util.Arrays;
  * Meant as a cheap fallback when full pathing is not needed or possible
  * SUCCESS: Always
  */
-public class FindDummyPathToNode extends Node {
+@BehaviorAction(name = "find_dummy_path_to")
+public class FindDummyPathToNode extends BaseAction {
+    @In
+    PathfinderSystem system;
+
+    @In
+    private WorldProvider worldProvider;
+
     @Override
-    public FindDummyPathToTask createTask() {
-        return new FindDummyPathToTask(this);
+    public void construct(Actor actor) {
+
     }
-    public static class FindDummyPathToTask extends Task{
-        @In
-        PathfinderSystem system;
 
-        @In
-        private WorldProvider world;
+    @Override
+    public BehaviorState modify(Actor actor, BehaviorState result) {
+        FlexibleMovementComponent movement = actor.getComponent(FlexibleMovementComponent.class);
+        Vector3i goal = movement.getPathGoal();
 
-        protected FindDummyPathToTask(Node node) {
-            super(node);
+        if (goal == null) {
+            return BehaviorState.FAILURE;
         }
 
-        @Override
-        public Status update(float dt) {
+        movement.setPath(Arrays.asList(goal));
+        actor.save(movement);
 
-            FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
-            Vector3i goal = actor().getComponent(FlexibleMovementComponent.class).getPathGoal();
-
-            if(goal == null) {
-                return Status.FAILURE;
-            }
-
-            movement.setPath(Arrays.asList(goal));
-            actor().save(movement);
-
-            return Status.SUCCESS;
-        }
-
-        @Override
-        public void handle(Status result) {
-
-        }
+        return BehaviorState.SUCCESS;
     }
 }

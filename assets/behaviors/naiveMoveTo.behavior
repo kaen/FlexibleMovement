@@ -1,34 +1,11 @@
 {
-  "model": {
-    "nodeType": "engine:SequenceNode",
-    "nodeId": 0,
-    "node": {
-      "children": [
+    "sequence": [
+        "find_path_to",
+        "validate_path",
         {
-          "nodeType": "engine:SelectorNode",
-          "nodeId": 10,
-          "node": {
-            "children": [
-              {
-                "nodeType": "FlexibleMovement:FindPathToNode",
-                "nodeId": 11,
-                "node": {}
-              }
-            ]
-          }
-        },
-        {
-          "nodeType": "FlexibleMovement:MoveAlongPathNode",
-          "nodeId": 12,
-          "node": {
-            "child": {
-              "nodeType": "FlexibleMovement:MoveToNode",
-              "nodeId": 13,
-              "node": {}
+            "move_along_path": {
+                "child": "flexible_move_to"
             }
-          }
         }
-      ]
-    }
-  }
+    ]
 }

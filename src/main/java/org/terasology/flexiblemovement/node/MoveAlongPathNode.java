@@ -16,60 +16,36 @@
 package org.terasology.flexiblemovement.node;
 
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
-import org.terasology.logic.behavior.tree.DecoratorNode;
-import org.terasology.logic.behavior.tree.Node;
-import org.terasology.logic.behavior.tree.Status;
-import org.terasology.logic.behavior.tree.Task;
-import org.terasology.math.geom.Vector3i;
+import org.terasology.logic.behavior.BehaviorAction;
+import org.terasology.logic.behavior.core.Actor;
+import org.terasology.logic.behavior.core.BaseAction;
+import org.terasology.logic.behavior.core.BehaviorState;
 
 /**
  * Performs a child node along the FlexibleMovementComponent.path
- *
+ * <p>
  * 1. Sets the FlexibleMovementComponent.target
  * 2. Runs the child node until SUCCESS/FAILURE
  * 3. On child SUCCESS, sets target to next waypoint and starts child again
  * 4. On child FAILURE, returns FAILURE
  * 5. When end of path is reached, returns SUCCESS
  */
-public class MoveAlongPathNode extends DecoratorNode {
+@BehaviorAction(name = "move_along_path")
+public class MoveAlongPathNode extends BaseAction {
+
     @Override
-    public MoveAlongPathTask createTask() {
-        return new MoveAlongPathTask(this);
-    }
-
-    public class MoveAlongPathTask extends Task {
-        protected MoveAlongPathTask(Node node) {
-            super(node);
-        }
-
-        @Override
-        public void onInitialize() {
-            start(getChild());
-        }
-
-        @Override
-        public Status update(float dt) {
-            return Status.RUNNING;
-        }
-
-        @Override
-        public void handle(Status result) {
-            FlexibleMovementComponent movement = actor().getComponent(FlexibleMovementComponent.class);
-            if(result == Status.SUCCESS) {
-                movement.advancePath();
-                if(movement.isPathFinished()) {
-                    movement.resetPath();
-                    stop(Status.SUCCESS);
-                } else {
-                    start(getChild());
-                }
+    public BehaviorState modify(Actor actor, BehaviorState result) {
+        FlexibleMovementComponent movement = actor.getComponent(FlexibleMovementComponent.class);
+        if (result == BehaviorState.SUCCESS) {
+            movement.advancePath();
+            if (movement.isPathFinished()) {
+                movement.resetPath();
+                return BehaviorState.SUCCESS;
             }
-
-            if(result == Status.FAILURE) {
-                stop(Status.FAILURE);
-            }
-
-            actor().save(movement);
         }
+
+        actor.save(movement);
+
+        return BehaviorState.FAILURE;
     }
 }
