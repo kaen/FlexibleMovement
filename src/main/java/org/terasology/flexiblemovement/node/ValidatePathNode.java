@@ -15,6 +15,7 @@
  */
 package org.terasology.flexiblemovement.node;
 
+import org.terasology.context.Context;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
 import org.terasology.flexiblemovement.system.FlexibleMovementSystem;
 import org.terasology.flexiblemovement.system.PluginSystem;
@@ -34,11 +35,14 @@ import org.terasology.registry.In;
 @BehaviorAction(name = "validate_path")
 public class ValidatePathNode extends BaseAction {
     @In
-    private PathfinderSystem system;
-    @In
+    private Context context;
+
     private PluginSystem pluginSystem;
-    @In
-    private FlexibleMovementSystem flexibleMovementSystem;
+
+    @Override
+    public void construct(Actor actor) {
+        pluginSystem = context.get(PluginSystem.class);
+    }
 
     @Override
     public BehaviorState modify(Actor actor, BehaviorState result) {

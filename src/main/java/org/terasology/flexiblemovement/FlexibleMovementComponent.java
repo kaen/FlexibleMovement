@@ -39,6 +39,8 @@ public final class FlexibleMovementComponent implements Component {
      */
     public float targetTolerance = 0.5f;
 
+    public PathStatus pathStatus;
+
     // an entity to take the goal position from
     private EntityRef pathGoalEntity = null;
 
@@ -80,8 +82,9 @@ public final class FlexibleMovementComponent implements Component {
     }
 
     public void resetPath() {
-        path.clear();
+        path = Lists.newArrayList();
         pathIndex = 0;
+        pathStatus = null;
     }
 
     public void advancePath() {
@@ -97,6 +100,7 @@ public final class FlexibleMovementComponent implements Component {
 
     public void setPath(List<Vector3i> path) {
         resetPath();
+        this.pathStatus = PathStatus.SUCCESS;
         this.path.addAll(path);
         if(pathIndex < path.size()) {
             target = path.get(pathIndex);

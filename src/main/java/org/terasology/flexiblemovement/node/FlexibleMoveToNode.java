@@ -17,6 +17,7 @@ package org.terasology.flexiblemovement.node;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.context.Context;
 import org.terasology.engine.Time;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
 import org.terasology.flexiblemovement.plugin.WalkingMovementPlugin;
@@ -43,14 +44,20 @@ public class FlexibleMoveToNode extends BaseAction {
     private static final Logger logger = LoggerFactory.getLogger(FlexibleMoveToNode.class);
 
     @In
+    private Context context;
+
     private Time time;
-    @In
     private WorldProvider world;
-    @In
     private FlexibleMovementSystem flexibleMovementSystem;
-    @In
     private PluginSystem pluginSystem;
 
+    @Override
+    public void construct(Actor actor) {
+        time = context.get(Time.class);
+        world = context.get(WorldProvider.class);
+        flexibleMovementSystem = context.get(FlexibleMovementSystem.class);
+        pluginSystem = context.get(PluginSystem.class);
+    }
 
     @Override
     public BehaviorState modify(Actor actor, BehaviorState result) {

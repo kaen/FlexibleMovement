@@ -18,9 +18,9 @@ package org.terasology.flexiblemovement.node;
 import org.terasology.context.Context;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
 import org.terasology.flexiblemovement.FlexibleMovementHelper;
+import org.terasology.flexiblemovement.PathStatus;
 import org.terasology.flexiblemovement.system.PluginSystem;
 import org.terasology.flexiblepathfinding.JPSConfig;
-import org.terasology.flexiblepathfinding.PathfinderCallback;
 import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.logic.behavior.BehaviorAction;
 import org.terasology.logic.behavior.core.Actor;
@@ -30,8 +30,6 @@ import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.registry.In;
 
-import java.util.List;
-
 /**
  * Finds a path to the pathGoalPosition of the Actor, stores it in FlexibileMovementComponent.path
  * SUCCESS: When the pathfinder returns a valid path
@@ -39,9 +37,6 @@ import java.util.List;
  */
 @BehaviorAction(name = "find_path_to")
 public class FindPathToNode extends BaseAction {
-    private BehaviorState pathStatus = null;
-    private List<Vector3i> pathResult = null;
-
     @In
     private Context context;
 
@@ -55,46 +50,50 @@ public class FindPathToNode extends BaseAction {
     }
 
     @Override
-    public BehaviorState modify(Actor actor, BehaviorState result) {
-        if (pathStatus == null) {
-            pathStatus = BehaviorState.RUNNING;
-            FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
-            Vector3i start = FlexibleMovementHelper.posToBlock(actor.getComponent(LocationComponent.class).getWorldPosition());
-            Vector3i goal = flexibleMovementComponent.getPathGoal();
+    public BehaviorState modify(Actor actor, BehaviorState _) {
+        FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
 
-            if (start == null || goal == null) {
-                return BehaviorState.FAILURE;
-            }
-
-            JPSConfig config = new JPSConfig(start, goal);
-            config.useLineOfSight = false;
-            config.maxTime = 10f;
-            config.maxDepth = 150;
-            config.goalDistance = flexibleMovementComponent.pathGoalDistance;
-            config.plugin = pluginSystem.getMovementPlugin(actor.getEntity()).getJpsPlugin(actor.getEntity());
-            config.requester = actor.getEntity();
-
-            pathfinderSystem.requestPath(config, (path, target) -> {
-                if (path == null || path.size() == 0) {
-                    pathStatus = BehaviorState.FAILURE;
-                    return;
-                }
-                pathStatus = BehaviorState.SUCCESS;
-                pathResult = path;
-            });
+        if (flexibleMovementComponent.pathStatus == PathStatus.SUCCESS) {
+            return BehaviorState.SUCCESS;
         }
 
-        if (pathStatus == BehaviorState.SUCCESS) {
-            FlexibleMovementComponent movement = actor.getComponent(FlexibleMovementComponent.class);
+        if (flexibleMovementComponent.pathStatus == PathStatus.FAILURE) {
+            return BehaviorState.FAILURE;
+        }
+
+        flexibleMovementComponent.pathStatus = PathStatus.RUNNING;
+        Vector3i start = FlexibleMovementHelper.posToBlock(actor.getComponent(LocationComponent.class).getWorldPosition());
+        Vector3i goal = flexibleMovementComponent.getPathGoal();
+
+        if (start == null || goal == null) {
+            return BehaviorState.FAILURE;
+        }
+
+        JPSConfig config = new JPSConfig(start, goal);
+        config.useLineOfSight = false;
+        config.maxTime = 10f;
+        config.maxDepth = 150;
+        config.goalDistance = flexibleMovementComponent.pathGoalDistance;
+        config.plugin = pluginSystem.getMovementPlugin(actor.getEntity()).getJpsPlugin(actor.getEntity());
+        config.requester = actor.getEntity();
+
+        pathfinderSystem.requestPath(config, (path, target) -> {
+            if (path == null || path.size() == 0) {
+                flexibleMovementComponent.pathStatus = PathStatus.FAILURE;
+                return;
+            }
+
+            flexibleMovementComponent.setPath(path);
+            flexibleMovementComponent.pathStatus = PathStatus.SUCCESS;
 
             // PF System returns paths including the starting point.
             // Since we don't need to move to where we started, we remove the first point in the path
-            pathResult.remove(0);
+            path.remove(0);
 
-            movement.setPath(pathResult);
-            actor.save(movement);
-        }
+            actor.save(flexibleMovementComponent);
+        });
 
-        return pathStatus;
+        actor.save(flexibleMovementComponent);
+        return BehaviorState.RUNNING;
     }
 }

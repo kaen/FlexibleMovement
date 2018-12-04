@@ -30,7 +30,7 @@ import org.terasology.logic.behavior.core.BehaviorState;
  * 4. On child FAILURE, returns FAILURE
  * 5. When end of path is reached, returns SUCCESS
  */
-@BehaviorAction(name = "move_along_path")
+@BehaviorAction(name = "move_along_path", isDecorator = true)
 public class MoveAlongPathNode extends BaseAction {
 
     @Override
