@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblemovement.node;
+package org.terasology.flexiblemovement.action;
 
 import org.terasology.context.Context;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
-import org.terasology.flexiblemovement.system.FlexibleMovementSystem;
 import org.terasology.flexiblemovement.system.PluginSystem;
-import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.flexiblepathfinding.plugins.JPSPlugin;
 import org.terasology.logic.behavior.BehaviorAction;
 import org.terasology.logic.behavior.core.Actor;
@@ -32,8 +30,8 @@ import org.terasology.registry.In;
  * SUCCESS: when there are no unwalkable waypoints
  * FAILURE: otherwise
  */
-@BehaviorAction(name = "validate_path")
-public class ValidatePathNode extends BaseAction {
+@BehaviorAction(name = "flexible_movement_validate_path")
+public class ValidatePathAction extends BaseAction {
     @In
     private Context context;
 

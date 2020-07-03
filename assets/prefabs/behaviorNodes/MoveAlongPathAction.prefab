@@ -1,0 +1,12 @@
+{
+  "BehaviorNode": {
+    "type": "MoveAlongPathAction",
+    "name": "flexible_movement_move_along_path",
+    "displayName": "Move Along Path",
+    "category": "movement",
+    "shape": "rect",
+    "description": "Advance sequentially along this entity's path while running the child action. Returns failure when child fails, success when path is complete",
+    "color": [180, 180, 180, 255],
+    "textColor": [0, 0, 0, 255]
+  }
+}

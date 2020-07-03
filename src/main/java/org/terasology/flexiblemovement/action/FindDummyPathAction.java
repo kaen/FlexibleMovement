@@ -13,39 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblemovement.node;
+package org.terasology.flexiblemovement.action;
 
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
+import org.terasology.flexiblepathfinding.PathfinderSystem;
 import org.terasology.logic.behavior.BehaviorAction;
 import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.behavior.core.BaseAction;
 import org.terasology.logic.behavior.core.BehaviorState;
+import org.terasology.math.geom.Vector3i;
+import org.terasology.registry.In;
+import org.terasology.world.WorldProvider;
+
+import java.util.Arrays;
 
 /**
- * Performs a child node along the FlexibleMovementComponent.path
- * <p>
- * 1. Sets the FlexibleMovementComponent.target
- * 2. Runs the child node until SUCCESS/FAILURE
- * 3. On child SUCCESS, sets target to next waypoint and starts child again
- * 4. On child FAILURE, returns FAILURE
- * 5. When end of path is reached, returns SUCCESS
+ * Constructs a dummy two-step path consisting of only the actor's current position and goal position
+ * Meant as a cheap fallback when full pathing is not needed or possible
+ * SUCCESS: Always
  */
-@BehaviorAction(name = "move_along_path", isDecorator = true)
-public class MoveAlongPathNode extends BaseAction {
+@BehaviorAction(name = "flexible_movement_find_dummy_path_to")
+public class FindDummyPathAction extends BaseAction {
+    @In
+    PathfinderSystem system;
+
+    @In
+    private WorldProvider worldProvider;
+
+    @Override
+    public void construct(Actor actor) {
+
+    }
 
     @Override
     public BehaviorState modify(Actor actor, BehaviorState result) {
         FlexibleMovementComponent movement = actor.getComponent(FlexibleMovementComponent.class);
-        if (result == BehaviorState.SUCCESS) {
-            movement.advancePath();
-            if (movement.isPathFinished()) {
-                movement.resetPath();
-                return BehaviorState.SUCCESS;
-            }
+        Vector3i goal = movement.getPathGoal();
+
+        if (goal == null) {
+            return BehaviorState.FAILURE;
         }
 
+        movement.setPath(Arrays.asList(goal));
         actor.save(movement);
 
-        return BehaviorState.RUNNING;
+        return BehaviorState.SUCCESS;
     }
 }

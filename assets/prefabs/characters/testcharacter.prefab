@@ -4,7 +4,7 @@
   },
   "NameTag": { "text": "testcharacter" },
   "Behavior" : {
-    "tree" : "naiveMoveTo"
+    "tree" : "reliableMoveTo"
   },
   "persisted" : true,
   "location" : {},

@@ -1,7 +1,8 @@
 {
   "BehaviorNode": {
-    "type": "ValidatePathNode",
-    "name": "Validate Path",
+    "type": "ValidatePathAction",
+    "name": "flexible_movement_validate_path",
+    "displayName": "Validate Path",
     "category": "movement",
     "shape": "rect",
     "description": "Validate that this entity can traverse its current path",

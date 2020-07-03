@@ -16,8 +16,14 @@
 package org.terasology.flexiblemovement;
 
 import com.google.common.collect.Sets;
+import org.junit.Rule;
+import org.junit.rules.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.terasology.engine.EngineTime;
+import org.terasology.engine.Time;
+import org.terasology.engine.subsystem.common.TimeSubsystem;
+import org.terasology.engine.subsystem.headless.device.TimeSystem;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.logic.characters.CharacterMovementComponent;
@@ -33,6 +39,10 @@ import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 
 import java.util.Set;
+import java.util.Timer;
+
+import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(FlexibleMovementTestingEnvironment.class);
@@ -44,7 +54,7 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
 
     @Override
     public String getWorldGeneratorUri() {
-        return "core:flat";
+        return "coreworlds:flat";
     }
 
     public void executeFailingExample(String[] world, String[] path) {
@@ -61,8 +71,8 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
 
         WorldProvider worldProvider = getHostContext().get(WorldProvider.class);
         Block air = getHostContext().get(BlockManager.class).getBlock("engine:air");
-        Block dirt = getHostContext().get(BlockManager.class).getBlock("core:dirt");
-        Block water = getHostContext().get(BlockManager.class).getBlock("core:water");
+        Block dirt = getHostContext().get(BlockManager.class).getBlock("coreassets:dirt");
+        Block water = getHostContext().get(BlockManager.class).getBlock("coreassets:water");
 
         Region3i extents = getPaddedExtents(world, airHeight);
 
@@ -148,11 +158,17 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
 
         runUntil(()-> FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0);
 
+        Time time = getHostContext().get(Time.class);
+        long startTime = time.getRealTimeInMs();
+        long timeout = 30000;
         runWhile(()-> {
+            boolean timedOut = time.getRealTimeInMs() > startTime + timeout;
             Vector3f pos = entity.getComponent(LocationComponent.class).getWorldPosition();
             logger.warn("pos: {}", pos);
-            return FlexibleMovementHelper.posToBlock(pos).distance(stop) > 0;
+            return timedOut || FlexibleMovementHelper.posToBlock(pos).distance(stop) > 0;
         });
+
+        assertTrue(time.getRealTimeInMs() - startTime < timeout);
     }
 
     private Region3i getPaddedExtents(String[] world, int airHeight) {

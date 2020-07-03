@@ -1,9 +1,13 @@
 {
-    "sequence": [
-        {
-            "lookup" : {
-                "tree" : "FlexibleMovement:naiveMoveTo"
-            }
+    "loop": {
+        "child": {
+            "sequence": [
+                {
+                    "lookup" : {
+                        "tree" : "FlexibleMovement:naiveMoveTo"
+                    }
+                }
+            ]
         }
-    ]
+    }
 }

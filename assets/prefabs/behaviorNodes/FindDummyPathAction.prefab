@@ -1,0 +1,12 @@
+{
+  "BehaviorNode": {
+    "type": "FindDummyPathAction",
+    "name": "flexible_movement_find_dummy_path_to",
+    "displayName": "Find Dummy Path",
+    "category": "movement",
+    "shape": "rect",
+    "description": "Finds a dummy path to target consisting only of the current and target location",
+    "color": [180, 180, 180, 255],
+    "textColor": [0, 0, 0, 255]
+  }
+}

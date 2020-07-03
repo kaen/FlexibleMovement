@@ -1,0 +1,12 @@
+{
+  "BehaviorNode": {
+    "type": "MoveToTargetAction",
+    "name": "flexible_movement_move_to_target",
+    "displayName": "Move To Target",
+    "category": "movement",
+    "shape": "rect",
+    "description": "Move to this entity's immediate move target (usually the next position in its path) using the FlexibleMovement mode",
+    "color": [180, 180, 180, 255],
+    "textColor": [0, 0, 0, 255]
+  }
+}

@@ -7,15 +7,15 @@
     "dependencies" : [
         {
             "id" : "FlexiblePathfinding",
-            "minVersion" : "0.1.0"
+            "minVersion" : "1.0.0"
         },
         {
             "id" : "Behaviors",
-            "minVersion" : "0.2.0"
+            "minVersion" : "1.0.0"
         },
         {
             "id" : "ModuleTestingEnvironment",
-            "minVersion" : "0.1.0"
+            "minVersion" : "0.2.0"
         }
     ],
     "serverSideOnly" : false

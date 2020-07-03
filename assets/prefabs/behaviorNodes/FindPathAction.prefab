@@ -1,7 +1,8 @@
 {
   "BehaviorNode": {
-    "type": "FindPathToNode",
-    "name": "Find Path",
+    "type": "FindPathAction",
+    "name": "flexible_movement_find_path_to",
+    "displayName": "Find Path",
     "category": "movement",
     "shape": "rect",
     "description": "Finds a path to target using FlexiblePathfinding",

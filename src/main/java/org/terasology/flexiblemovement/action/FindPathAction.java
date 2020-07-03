@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblemovement.node;
+package org.terasology.flexiblemovement.action;
 
 import org.terasology.context.Context;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
@@ -35,8 +35,8 @@ import org.terasology.registry.In;
  * SUCCESS: When the pathfinder returns a valid path
  * FAILURE: When the pathfinder returns a failure or invalid path
  */
-@BehaviorAction(name = "find_path_to")
-public class FindPathToNode extends BaseAction {
+@BehaviorAction(name = "flexible_movement_find_path_to")
+public class FindPathAction extends BaseAction {
     @In
     private Context context;
 

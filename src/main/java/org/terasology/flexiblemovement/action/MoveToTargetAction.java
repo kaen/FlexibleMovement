@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.terasology.flexiblemovement.node;
+package org.terasology.flexiblemovement.action;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,9 +39,9 @@ import org.terasology.world.WorldProvider;
  * SUCCESS: When the actor reaches FlexibleMovementComponent.target
  * FAILURE: When the actor believes it is unable to reach its immediate target
  */
-@BehaviorAction(name = "flexible_move_to")
-public class FlexibleMoveToNode extends BaseAction {
-    private static final Logger logger = LoggerFactory.getLogger(FlexibleMoveToNode.class);
+@BehaviorAction(name = "flexible_movement_move_to_target")
+public class MoveToTargetAction extends BaseAction {
+    private static final Logger logger = LoggerFactory.getLogger(MoveToTargetAction.class);
 
     @In
     private Context context;
@@ -99,6 +99,8 @@ public class FlexibleMoveToNode extends BaseAction {
                     adjustedMoveTarget,
                     flexibleMovementComponent.sequenceNumber
             );
+
+            return BehaviorState.FAILURE;
         }
 
         actor.getEntity().send(inputEvent);
