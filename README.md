@@ -20,3 +20,7 @@ The movement implementation for `FlexiblePathfinding`.
 
 In general, you can just run the `reliableMoveTo` behavior, and modify `FlexibleMovementComponent` to control the 
 pathing behavior.
+
+## Debugging
+
+This module has a debugging UI to visually troubleshoot issues with movement.

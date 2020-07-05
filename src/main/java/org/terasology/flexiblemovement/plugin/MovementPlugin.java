@@ -67,6 +67,10 @@ public abstract class MovementPlugin {
     }
 
     public Vector3f getDelta(EntityRef entity, Vector3f dest) {
+        if (getTime().getGameDelta() == 0.0f) {
+            return Vector3f.zero();
+        }
+
         LocationComponent location = entity.getComponent(LocationComponent.class);
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
 
