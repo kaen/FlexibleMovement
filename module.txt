@@ -10,10 +10,6 @@
             "minVersion" : "1.0.0"
         },
         {
-            "id" : "Behaviors",
-            "minVersion" : "1.0.0"
-        },
-        {
             "id" : "ModuleTestingEnvironment",
             "minVersion" : "0.2.0"
         }
