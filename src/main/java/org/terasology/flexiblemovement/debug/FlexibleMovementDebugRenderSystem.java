@@ -18,6 +18,7 @@ package org.terasology.flexiblemovement.debug;
 import com.google.common.collect.Lists;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
@@ -36,6 +37,7 @@ import java.util.List;
 @Share(FlexibleMovementDebugRenderSystem.class)
 public class FlexibleMovementDebugRenderSystem extends BaseComponentSystem implements RenderSystem {
     private BlockSelectionRenderer selectionRenderer;
+    private boolean enabled = false;
 
     @In
     private EntityManager entityManager;
@@ -47,6 +49,10 @@ public class FlexibleMovementDebugRenderSystem extends BaseComponentSystem imple
 
     @Override
     public void renderOverlay() {
+        if (!enabled) {
+            return;
+        }
+
         selectionRenderer.beginRenderOverlay();
         for (EntityRef entity : entityManager.getEntitiesWith(FlexibleMovementComponent.class)) {
             FlexibleMovementComponent flexibleMovementComponent = entity.getComponent(FlexibleMovementComponent.class);
@@ -55,6 +61,13 @@ public class FlexibleMovementDebugRenderSystem extends BaseComponentSystem imple
             }
         }
         selectionRenderer.endRenderOverlay();
+    }
+
+    @ReceiveEvent
+    public void onToggleRender(ToggleRenderingEvent event, EntityRef entity) {
+        if (event.isDown()) {
+            enabled = !enabled;
+        }
     }
 
     @Override

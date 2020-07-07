@@ -71,7 +71,7 @@ public class FindPathAction extends BaseAction {
 
         JPSConfig config = new JPSConfig(start, goal);
         config.useLineOfSight = false;
-        config.maxTime = 10f;
+        config.maxTime = 0.250f;
         config.maxDepth = 150;
         config.goalDistance = flexibleMovementComponent.pathGoalDistance;
         config.plugin = pluginSystem.getMovementPlugin(actor.getEntity()).getJpsPlugin(actor.getEntity());
