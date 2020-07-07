@@ -15,7 +15,6 @@
  */
 package org.terasology.flexiblemovement.debug;
 
-import com.google.common.collect.Lists;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.event.ReceiveEvent;
@@ -25,19 +24,16 @@ import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.systems.RenderSystem;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
 import org.terasology.math.geom.Vector3i;
-import org.terasology.registry.CoreRegistry;
 import org.terasology.registry.In;
 import org.terasology.registry.Share;
 import org.terasology.rendering.world.selection.BlockSelectionRenderer;
 import org.terasology.utilities.Assets;
 
-import java.util.List;
-
 @RegisterSystem(RegisterMode.CLIENT)
 @Share(FlexibleMovementDebugRenderSystem.class)
 public class FlexibleMovementDebugRenderSystem extends BaseComponentSystem implements RenderSystem {
     private BlockSelectionRenderer selectionRenderer;
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     @In
     private EntityManager entityManager;
@@ -65,6 +61,7 @@ public class FlexibleMovementDebugRenderSystem extends BaseComponentSystem imple
 
     @ReceiveEvent
     public void onToggleRender(ToggleRenderingEvent event, EntityRef entity) {
+        event.consume();
         if (event.isDown()) {
             enabled = !enabled;
         }

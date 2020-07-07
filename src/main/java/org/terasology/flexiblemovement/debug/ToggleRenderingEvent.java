@@ -9,7 +9,7 @@ import org.terasology.input.InputType;
 import org.terasology.input.Keyboard;
 import org.terasology.input.RegisterBindButton;
 
-@RegisterBindButton(id = "togglerendering", category = "flexiblemovementtestbed", description = "Toggle Path Debug Rendering")
-@DefaultBinding(type = InputType.KEY, id = Keyboard.KeyId.F6)
+@RegisterBindButton(id = "togglerendering", category = "flexiblemovement", description = "Toggle Path Debug Rendering")
+@DefaultBinding(type = InputType.KEY, id = Keyboard.KeyId.F8)
 public class ToggleRenderingEvent extends BindButtonEvent {
 }
