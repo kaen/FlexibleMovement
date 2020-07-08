@@ -18,5 +18,6 @@ package org.terasology.flexiblemovement;
 public enum PathStatus {
     RUNNING,
     SUCCESS,
-    FAILURE
+    FAILURE,
+    IDLE
 }

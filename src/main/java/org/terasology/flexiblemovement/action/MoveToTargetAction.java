@@ -74,6 +74,7 @@ public class MoveToTargetAction extends BaseAction {
 
         Vector3f position = location.getWorldPosition();
         if (position.distance(adjustedMoveTarget) <= flexibleMovementComponent.targetTolerance) {
+            stopMoving(actor, flexibleMovementComponent);
             return BehaviorState.SUCCESS;
         }
 
@@ -93,21 +94,26 @@ public class MoveToTargetAction extends BaseAction {
             // that a gentle nudge in a probably-correct direction will at least make the physics reconcile the
             // intersection, and hopefully return to properly penetrable blocks.
             logger.debug("Movement plugin returned null");
-            MovementPlugin fallbackPlugin = new WalkingMovementPlugin(world, time);
-            inputEvent = fallbackPlugin.move(
-                    actor.getEntity(),
-                    adjustedMoveTarget,
-                    flexibleMovementComponent.sequenceNumber
-            );
-
+//            MovementPlugin fallbackPlugin = new WalkingMovementPlugin(world, time);
+//            inputEvent = fallbackPlugin.move(
+//                    actor.getEntity(),
+//                    adjustedMoveTarget,
+//                    flexibleMovementComponent.sequenceNumber
+//            );
+            stopMoving(actor, flexibleMovementComponent);
             return BehaviorState.FAILURE;
         }
 
+        inputEvent = new CharacterMoveInputEvent(inputEvent, (int) (actor.getDelta() * 1000.0f));
         actor.getEntity().send(inputEvent);
         flexibleMovementComponent.lastInput = time.getGameTimeInMs();
         flexibleMovementComponent.collidedHorizontally = false;
         actor.save(flexibleMovementComponent);
-
         return BehaviorState.RUNNING;
+    }
+
+    private void stopMoving(Actor actor, FlexibleMovementComponent flexibleMovementComponent) {
+        actor.getEntity().send(new CharacterMoveInputEvent(flexibleMovementComponent.sequenceNumber++, 0f, 0f, org.terasology.math.geom.Vector3f.zero(), false, false, false, (int) (actor.getDelta() * 1000.0f)));
+        actor.getEntity().saveComponent(flexibleMovementComponent);
     }
 }

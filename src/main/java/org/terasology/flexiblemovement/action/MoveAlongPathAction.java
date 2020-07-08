@@ -34,21 +34,22 @@ import org.terasology.logic.behavior.core.BehaviorState;
 public class MoveAlongPathAction extends BaseAction {
 
     @Override
-    public BehaviorState modify(Actor actor, BehaviorState result) {
+    public BehaviorState modify(Actor actor, BehaviorState childResult) {
         FlexibleMovementComponent movement = actor.getComponent(FlexibleMovementComponent.class);
-        if (result == BehaviorState.SUCCESS) {
+        BehaviorState result = BehaviorState.RUNNING;
+        if (childResult == BehaviorState.SUCCESS) {
             movement.advancePath();
             if (movement.isPathFinished()) {
                 movement.resetPath();
-                return BehaviorState.SUCCESS;
+                result = BehaviorState.SUCCESS;
             }
-        } else if (result == BehaviorState.FAILURE) {
+        } else if (childResult == BehaviorState.FAILURE) {
             movement.resetPath();
-            return BehaviorState.FAILURE;
+            result = BehaviorState.FAILURE;
         }
 
         actor.save(movement);
 
-        return BehaviorState.RUNNING;
+        return result;
     }
 }

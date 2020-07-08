@@ -50,24 +50,38 @@ public class FindPathAction extends BaseAction {
     }
 
     @Override
-    public BehaviorState modify(Actor actor, BehaviorState _) {
+    public BehaviorState modify(Actor actor, BehaviorState unusedState) {
         FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
-
-        if (flexibleMovementComponent.pathStatus == PathStatus.SUCCESS) {
-            return BehaviorState.SUCCESS;
+        if (flexibleMovementComponent == null) {
+            flexibleMovementComponent.pathStatus = PathStatus.IDLE;
+            actor.save(flexibleMovementComponent);
+            return BehaviorState.FAILURE;
         }
 
-        if (flexibleMovementComponent.pathStatus == PathStatus.FAILURE) {
+        // handle non-idle path finding statuses
+        switch (flexibleMovementComponent.pathStatus) {
+            case SUCCESS:
+                flexibleMovementComponent.pathStatus = PathStatus.IDLE;
+                actor.save(flexibleMovementComponent);
+                return BehaviorState.SUCCESS;
+            case FAILURE:
+                flexibleMovementComponent.pathStatus = PathStatus.IDLE;
+                actor.save(flexibleMovementComponent);
+                return BehaviorState.FAILURE;
+            case RUNNING:
+                return BehaviorState.RUNNING;
+        }
+
+        // path status was idle, request a new path
+        Vector3i start = FlexibleMovementHelper.posToBlock(actor.getComponent(LocationComponent.class).getWorldPosition());
+        Vector3i goal = flexibleMovementComponent.getPathGoal();
+
+        if (goal == null) {
             return BehaviorState.FAILURE;
         }
 
         flexibleMovementComponent.pathStatus = PathStatus.RUNNING;
-        Vector3i start = FlexibleMovementHelper.posToBlock(actor.getComponent(LocationComponent.class).getWorldPosition());
-        Vector3i goal = flexibleMovementComponent.getPathGoal();
-
-        if (start == null || goal == null) {
-            return BehaviorState.FAILURE;
-        }
+        actor.save(flexibleMovementComponent);
 
         JPSConfig config = new JPSConfig(start, goal);
         config.useLineOfSight = false;
@@ -79,7 +93,9 @@ public class FindPathAction extends BaseAction {
 
         pathfinderSystem.requestPath(config, (path, target) -> {
             if (path == null || path.size() == 0) {
+                flexibleMovementComponent.resetPath();
                 flexibleMovementComponent.pathStatus = PathStatus.FAILURE;
+                actor.save(flexibleMovementComponent);
                 return;
             }
 
