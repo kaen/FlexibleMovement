@@ -104,7 +104,11 @@ public class MoveToTargetAction extends BaseAction {
             return BehaviorState.FAILURE;
         }
 
-        inputEvent = new CharacterMoveInputEvent(inputEvent, (int) (actor.getDelta() * 1000.0f));
+        // TODO: uncommenting this (to use actor.getDelta() instead of time.getDelta()
+        // seems more correct, but it always sets jumping=false so doing it with the copy constructor breaks leaping
+        // Plugins need to take a delta as an argument instead
+        // inputEvent = new CharacterMoveInputEvent(inputEvent, (int) (actor.getDelta() * 1000.0f));
+
         actor.getEntity().send(inputEvent);
         flexibleMovementComponent.lastInput = time.getGameTimeInMs();
         flexibleMovementComponent.collidedHorizontally = false;
