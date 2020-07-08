@@ -52,11 +52,6 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
         return Sets.newHashSet("FlexibleMovement");
     }
 
-    @Override
-    public String getWorldGeneratorUri() {
-        return "coreworlds:flat";
-    }
-
     public void executeFailingExample(String[] world, String[] path) {
         // do nothing
     }
@@ -160,14 +155,15 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
 
         Time time = getHostContext().get(Time.class);
         long startTime = time.getRealTimeInMs();
-        long timeout = 30000;
+        long timeout = 5000;
         runWhile(()-> {
             boolean timedOut = time.getRealTimeInMs() > startTime + timeout;
             Vector3f pos = entity.getComponent(LocationComponent.class).getWorldPosition();
             logger.warn("pos: {}", pos);
-            return timedOut || FlexibleMovementHelper.posToBlock(pos).distance(stop) > 0;
+            return !timedOut && FlexibleMovementHelper.posToBlock(pos).distance(stop) > 0;
         });
 
+        logger.debug("Goal was {}, distance {}", stop, entity.getComponent(LocationComponent.class).getWorldPosition().distance(stop.toVector3f()));
         assertTrue(time.getRealTimeInMs() - startTime < timeout);
     }
 
