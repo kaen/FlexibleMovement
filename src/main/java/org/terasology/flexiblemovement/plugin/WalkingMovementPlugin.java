@@ -44,12 +44,11 @@ public class WalkingMovementPlugin extends MovementPlugin {
         return new WalkingPlugin(getWorld(), component.radius * 2.0f, component.height);    }
 
     @Override
-    public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
+    public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence, long deltaMs) {
         Vector3f delta = getDelta(entity, dest);
         float yaw = getYaw(delta);
-        long dt = getTime().getGameDeltaInMs();
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false, false, dt);
+        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false, false, deltaMs);
     }
 }

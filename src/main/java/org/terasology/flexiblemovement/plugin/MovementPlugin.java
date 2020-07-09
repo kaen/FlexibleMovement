@@ -44,7 +44,7 @@ public abstract class MovementPlugin {
     }
 
     public abstract JPSPlugin getJpsPlugin(EntityRef entity);
-    public abstract CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence);
+    public abstract CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence, long deltaMs);
 
     public WorldProvider getWorld() {
         return world;

@@ -44,10 +44,9 @@ public class FlyingMovementPlugin extends MovementPlugin {
     }
 
     @Override
-    public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence) {
+    public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence, long deltaMs) {
         Vector3f delta = getDelta(entity, dest);
         float yaw = getYaw(delta);
-        long dt = getTime().getGameDeltaInMs();
         float pitch = getPitch(delta);
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
@@ -55,7 +54,7 @@ public class FlyingMovementPlugin extends MovementPlugin {
             entity.send(new SetMovementModeEvent(MovementMode.FLYING));
         }
 
-        return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, false,true, dt);
+        return new CharacterMoveInputEvent(sequence, pitch, yaw, delta, false, false,true, deltaMs);
     }
 
     private float getPitch(Vector3f delta) {

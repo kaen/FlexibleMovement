@@ -83,7 +83,8 @@ public class MoveToTargetAction extends BaseAction {
         CharacterMoveInputEvent inputEvent = plugin.move(
                 actor.getEntity(),
                 adjustedMoveTarget,
-                flexibleMovementComponent.sequenceNumber
+                flexibleMovementComponent.sequenceNumber,
+                (int) (actor.getDelta() * 1000)
         );
 
         if (inputEvent == null) {
@@ -103,11 +104,6 @@ public class MoveToTargetAction extends BaseAction {
             stopMoving(actor, flexibleMovementComponent);
             return BehaviorState.FAILURE;
         }
-
-        // TODO: uncommenting this (to use actor.getDelta() instead of time.getDelta()
-        // seems more correct, but it always sets jumping=false so doing it with the copy constructor breaks leaping
-        // Plugins need to take a delta as an argument instead
-        // inputEvent = new CharacterMoveInputEvent(inputEvent, (int) (actor.getDelta() * 1000.0f));
 
         actor.getEntity().send(inputEvent);
         flexibleMovementComponent.lastInput = time.getGameTimeInMs();
