@@ -33,7 +33,9 @@ import org.terasology.math.Region3i;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
 import org.terasology.moduletestingenvironment.ModuleTestingEnvironment;
+import org.terasology.moduletestingenvironment.ModuleTestingHelper;
 import org.terasology.physics.engine.PhysicsEngine;
+import org.terasology.registry.In;
 import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
@@ -42,19 +44,14 @@ import java.util.Set;
 import java.util.Timer;
 
 import static junit.framework.TestCase.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment {
+public class FlexibleMovementTestingEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(FlexibleMovementTestingEnvironment.class);
 
-    @Override
-    public Set<String> getDependencies() {
-        return Sets.newHashSet("FlexibleMovement");
-    }
-
-    public void executeFailingExample(String[] world, String[] path) {
-        // do nothing
-    }
+    @In
+    private ModuleTestingHelper helper;
 
     public void executeExample(String[] world, String[] path, String ... movementTypes) {
         executeExample(world, path, 0.9f, 0.3f, movementTypes);
@@ -64,15 +61,15 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
     public void executeExample(String[] world, String[] path, float height, float radius, String ... movementTypes) {
         int airHeight = 41;
 
-        WorldProvider worldProvider = getHostContext().get(WorldProvider.class);
-        Block air = getHostContext().get(BlockManager.class).getBlock("engine:air");
-        Block dirt = getHostContext().get(BlockManager.class).getBlock("coreassets:dirt");
-        Block water = getHostContext().get(BlockManager.class).getBlock("coreassets:water");
+        WorldProvider worldProvider = helper.getHostContext().get(WorldProvider.class);
+        Block air = helper.getHostContext().get(BlockManager.class).getBlock("engine:air");
+        Block dirt = helper.getHostContext().get(BlockManager.class).getBlock("coreassets:dirt");
+        Block water = helper.getHostContext().get(BlockManager.class).getBlock("coreassets:water");
 
         Region3i extents = getPaddedExtents(world, airHeight);
 
         for (Vector3i pos : extents) {
-            forceAndWaitForGeneration(pos);
+            helper.forceAndWaitForGeneration(pos);
         }
 
         for (Vector3i pos : extents) {
@@ -137,7 +134,7 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
             }
         }
 
-        EntityRef entity = getHostContext().get(EntityManager.class).create("flexiblemovement:testcharacter");
+        EntityRef entity = helper.getHostContext().get(EntityManager.class).create("flexiblemovement:testcharacter");
         entity.send(new CharacterTeleportEvent(start.toVector3f()));
         entity.getComponent(FlexibleMovementComponent.class).setPathGoal(stop);
         entity.getComponent(FlexibleMovementComponent.class).movementTypes.clear();
@@ -148,23 +145,26 @@ public class FlexibleMovementTestingEnvironment extends ModuleTestingEnvironment
 
         // after updating character collision stuff we have to remake the collider, based on the playerHeight command
         // TODO there should probably be a helper for this instead
-        getHostContext().get(PhysicsEngine.class).removeCharacterCollider(entity);
-        getHostContext().get(PhysicsEngine.class).getCharacterCollider(entity);
+        helper.getHostContext().get(PhysicsEngine.class).removeCharacterCollider(entity);
+        helper.getHostContext().get(PhysicsEngine.class).getCharacterCollider(entity);
 
-        runUntil(()-> FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0);
+        helper.runUntil(()-> FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0);
 
-        Time time = getHostContext().get(Time.class);
-        long startTime = time.getRealTimeInMs();
-        long timeout = 5000;
-        runWhile(()-> {
-            boolean timedOut = time.getRealTimeInMs() > startTime + timeout;
+        float delta = 0.5f;
+        boolean timedOut = helper.runWhile(10000, ()-> {
             Vector3f pos = entity.getComponent(LocationComponent.class).getWorldPosition();
             logger.warn("pos: {}", pos);
-            return !timedOut && FlexibleMovementHelper.posToBlock(pos).distance(stop) > 0;
+            return pos.distance(stop.toVector3f()) > delta;
         });
 
-        logger.debug("Goal was {}, distance {}", stop, entity.getComponent(LocationComponent.class).getWorldPosition().distance(stop.toVector3f()));
-        assertTrue(time.getRealTimeInMs() - startTime < timeout);
+        float distance = entity.getComponent(LocationComponent.class).getWorldPosition().distance(stop.toVector3f());
+
+        // clean up
+        entity.destroy();
+
+        logger.debug("Goal was {}, distance {}", stop, distance);
+        assertEquals(0f, distance, delta);
+        assertFalse(timedOut);
     }
 
     private Region3i getPaddedExtents(String[] world, int airHeight) {

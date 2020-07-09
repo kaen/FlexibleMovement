@@ -15,8 +15,15 @@
  */
 package org.terasology.flexiblemovement;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.terasology.moduletestingenvironment.MTEExtension;
+import org.terasology.moduletestingenvironment.extension.Dependencies;
+import org.terasology.moduletestingenvironment.extension.UseWorldGenerator;
 
+@ExtendWith(MTEExtension.class)
+@Dependencies("FlexibleMovement")
+@UseWorldGenerator("ModuleTestingEnvironment:dummy")
 public class SwimmingWalkingLeapingMovementTest extends FlexibleMovementTestingEnvironment {
     @Test
     public void simpleLeap() throws InterruptedException {
