@@ -1,6 +1,6 @@
 {
     "id" : "FlexibleMovement",
-    "version" : "0.1.0-SNAPSHOT",
+    "version" : "0.1.1",
     "author" : "",
     "displayName" : "FlexibleMovement",
     "description" : "",
@@ -11,7 +11,7 @@
         },
         {
             "id" : "ModuleTestingEnvironment",
-            "minVersion" : "0.3.0"
+            "minVersion" : "0.2.0"
         }
     ],
     "serverSideOnly" : false
