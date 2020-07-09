@@ -83,13 +83,13 @@ public class WalkingLeapingMovementTest extends FlexibleMovementTestingEnvironme
     @Test
     public void threeDimensionalMoves() throws InterruptedException {
         runTest(new String[]{
-                "XXX|XX |   ",
-                "X X|XXX| XX",
-                "XXX| X | XX"
+                "XXX|XXX|XXX|XXX",
+                "X X|XXX|XXX|XXX",
+                "XXX|XX |XXX|XXX"
         }, new String[]{
-                "?  |   |   ",
-                "   | 1 |   ",
-                "   |   |  !"
+                "?  |   |   |   ",
+                "   | 1 |   |   ",
+                "   |   |  !|   "
         });
     }
 

@@ -29,6 +29,8 @@ import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.behavior.core.BaseAction;
 import org.terasology.logic.behavior.core.BehaviorState;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
+import org.terasology.logic.characters.KinematicCharacterMover;
+import org.terasology.logic.characters.ServerCharacterPredictionSystem;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.registry.In;
@@ -41,6 +43,7 @@ import org.terasology.world.WorldProvider;
  */
 @BehaviorAction(name = "flexible_movement_move_to_target")
 public class MoveToTargetAction extends BaseAction {
+    public static final float INPUT_COOLDOWN_SECONDS = (float) (ServerCharacterPredictionSystem.MAX_INPUT_UNDERFLOW) / 2.0f / 1000.0f;
     private static final Logger logger = LoggerFactory.getLogger(MoveToTargetAction.class);
 
     @In
@@ -64,13 +67,17 @@ public class MoveToTargetAction extends BaseAction {
         LocationComponent location = actor.getComponent(LocationComponent.class);
         FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
 
+        if (flexibleMovementComponent == null) {
+            return BehaviorState.FAILURE;
+        }
+
+//        if (time.getGameTimeInMs() - flexibleMovementComponent.lastInput < INPUT_COOLDOWN_SECONDS) {
+//            return BehaviorState.SUCCESS;
+//        }
+
         // we need to translate the movement target to an expected real world position
         // in practice we just need to adjust the Y so that it's resting on top of the block at the right height
         Vector3f adjustedMoveTarget = flexibleMovementComponent.target.toVector3f();
-
-        // this is the result of experimentation and some penwork
-        // float adjustedY = (float) Math.ceil(adjustedMoveTarget.y - halfHeight) + halfHeight - 0.5f;
-        // adjustedMoveTarget.setY(adjustedY);
 
         Vector3f position = location.getWorldPosition();
         if (position.distance(adjustedMoveTarget) <= flexibleMovementComponent.targetTolerance) {
@@ -84,7 +91,9 @@ public class MoveToTargetAction extends BaseAction {
                 actor.getEntity(),
                 adjustedMoveTarget,
                 flexibleMovementComponent.sequenceNumber,
-                (int) (actor.getDelta() * 1000)
+                // time.getGameDeltaInMs()
+                // (int) (INPUT_COOLDOWN_SECONDS * 1000.0f)
+                (int) (actor.getDelta() * 1000.0f)
         );
 
         if (inputEvent == null) {

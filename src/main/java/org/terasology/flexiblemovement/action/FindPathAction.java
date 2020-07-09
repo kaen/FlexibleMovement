@@ -53,8 +53,6 @@ public class FindPathAction extends BaseAction {
     public BehaviorState modify(Actor actor, BehaviorState unusedState) {
         FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
         if (flexibleMovementComponent == null) {
-            flexibleMovementComponent.pathStatus = PathStatus.IDLE;
-            actor.save(flexibleMovementComponent);
             return BehaviorState.FAILURE;
         }
 
@@ -75,6 +73,12 @@ public class FindPathAction extends BaseAction {
         // path status was idle, request a new path
         Vector3i start = FlexibleMovementHelper.posToBlock(actor.getComponent(LocationComponent.class).getWorldPosition());
         Vector3i goal = flexibleMovementComponent.getPathGoal();
+
+        if (goal == start) {
+            flexibleMovementComponent.resetPath();
+            actor.getEntity().saveComponent(flexibleMovementComponent);
+            return BehaviorState.SUCCESS;
+        }
 
         if (goal == null) {
             return BehaviorState.FAILURE;

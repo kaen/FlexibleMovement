@@ -49,6 +49,7 @@ import static org.junit.Assert.assertTrue;
 
 public class FlexibleMovementTestingEnvironment {
     private static final Logger logger = LoggerFactory.getLogger(FlexibleMovementTestingEnvironment.class);
+    private final int timeoutMs = 30000;
 
     @In
     private ModuleTestingHelper helper;
@@ -151,10 +152,11 @@ public class FlexibleMovementTestingEnvironment {
         helper.runUntil(()-> FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0);
 
         float delta = 0.5f;
-        boolean timedOut = helper.runWhile(10000, ()-> {
+        boolean timedOut = helper.runWhile(timeoutMs, ()-> {
             Vector3f pos = entity.getComponent(LocationComponent.class).getWorldPosition();
-            logger.warn("pos: {}", pos);
-            return pos.distance(stop.toVector3f()) > delta;
+            float distance = pos.distance(stop.toVector3f());
+            logger.warn("distance: {}, pos: {}", distance, pos);
+            return distance > delta;
         });
 
         float distance = entity.getComponent(LocationComponent.class).getWorldPosition().distance(stop.toVector3f());

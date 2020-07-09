@@ -39,13 +39,13 @@ public class SwimmingWalkingLeapingMovementTest extends FlexibleMovementTestingE
     @Test
     public void threeDimensionalMoves() throws InterruptedException {
         runTest(new String[]{
-                "~~~|~~ |   ",
-                "~ ~|~~~| XX",
-                "~~~| ~ | XX"
+                "~~~|~~ |   |   ",
+                "~ ~|~~~| XX| XX",
+                "~~~| ~ | XX| XX"
         }, new String[]{
-                "?  |   |   ",
-                "   | 1 |   ",
-                "   |   |  !"
+                "?  |   |   |   ",
+                "   | 1 |   |   ",
+                "   |   |  !|   "
         });
     }
 

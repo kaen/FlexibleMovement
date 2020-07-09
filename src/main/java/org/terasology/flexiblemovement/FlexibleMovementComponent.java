@@ -41,7 +41,7 @@ public final class FlexibleMovementComponent implements Component {
      */
     @Replicate
     @Range(max = 100.0f)
-    public float targetTolerance = 0.5f;
+    public float targetTolerance = 0.45f;
 
     @Replicate
     @Enum

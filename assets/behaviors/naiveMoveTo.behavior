@@ -1,6 +1,11 @@
 {
     "sequence": [
-        "flexible_movement_find_path_to",
+        {
+            "parallel": [
+                "flexible_movement_find_path_to",
+                { "loop": { child: "flexible_movement_move_to_target" } }
+            ]
+        },
         "flexible_movement_validate_path",
         {
             "flexible_movement_move_along_path": {
