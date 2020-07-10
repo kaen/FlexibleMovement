@@ -60,7 +60,7 @@ public class FlexibleMovementTestingEnvironment {
     }
 
     public void executeExample(String[] world, String[] path, float height, float radius, String ... movementTypes) {
-        int airHeight = 41;
+        int airHeight = 0;
 
         WorldProvider worldProvider = helper.getHostContext().get(WorldProvider.class);
         Block air = helper.getHostContext().get(BlockManager.class).getBlock("engine:air");

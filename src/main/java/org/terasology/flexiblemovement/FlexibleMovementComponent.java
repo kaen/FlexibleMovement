@@ -18,6 +18,7 @@ package org.terasology.flexiblemovement;
 import com.google.common.collect.Lists;
 import org.terasology.entitySystem.Component;
 import org.terasology.entitySystem.entity.EntityRef;
+import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
 import org.terasology.math.geom.Vector3i;
@@ -42,6 +43,23 @@ public final class FlexibleMovementComponent implements Component {
     @Replicate
     @Range(max = 100.0f)
     public float targetTolerance = 0.45f;
+
+    /**
+     * When the movement plugin returns null (because it thinks it can't move to the target block) it will keep trying
+     * to move there anyway for this many seconds before giving up and returning FAILURE
+     */
+    @Replicate
+    @Range(max = 100.0f)
+    public float cantMoveToleranceSeconds = 0.5f;
+
+    /**
+     * The game time (in seconds) when this entity started being unable to move to its target. 0 means "never"
+     */
+    @Replicate
+    @TextField
+    public float lastCantMoveTime = 0f;
+
+    public CharacterMoveInputEvent lastInputEvent = null;
 
     @Replicate
     @Enum
@@ -76,7 +94,7 @@ public final class FlexibleMovementComponent implements Component {
 
     @Replicate
     @TextField
-    public float lastInput;
+    public float lastInputTimeSeconds;
 
     @Replicate
     @TextField

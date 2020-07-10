@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.terasology.context.Context;
 import org.terasology.engine.Time;
 import org.terasology.flexiblemovement.FlexibleMovementComponent;
-import org.terasology.flexiblemovement.plugin.WalkingMovementPlugin;
 import org.terasology.flexiblemovement.system.FlexibleMovementSystem;
 import org.terasology.flexiblemovement.system.PluginSystem;
 import org.terasology.flexiblemovement.plugin.MovementPlugin;
@@ -29,7 +28,6 @@ import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.behavior.core.BaseAction;
 import org.terasology.logic.behavior.core.BehaviorState;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
-import org.terasology.logic.characters.KinematicCharacterMover;
 import org.terasology.logic.characters.ServerCharacterPredictionSystem;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.geom.Vector3f;
@@ -65,64 +63,60 @@ public class MoveToTargetAction extends BaseAction {
     @Override
     public BehaviorState modify(Actor actor, BehaviorState result) {
         LocationComponent location = actor.getComponent(LocationComponent.class);
-        FlexibleMovementComponent flexibleMovementComponent = actor.getComponent(FlexibleMovementComponent.class);
+        FlexibleMovementComponent component = actor.getComponent(FlexibleMovementComponent.class);
 
-        if (flexibleMovementComponent == null) {
+        if (component == null) {
             return BehaviorState.FAILURE;
         }
 
-//        if (time.getGameTimeInMs() - flexibleMovementComponent.lastInput < INPUT_COOLDOWN_SECONDS) {
-//            return BehaviorState.SUCCESS;
-//        }
-
         // we need to translate the movement target to an expected real world position
         // in practice we just need to adjust the Y so that it's resting on top of the block at the right height
-        Vector3f adjustedMoveTarget = flexibleMovementComponent.target.toVector3f();
+        Vector3f adjustedMoveTarget = component.target.toVector3f();
 
         Vector3f position = location.getWorldPosition();
-        if (position.distance(adjustedMoveTarget) <= flexibleMovementComponent.targetTolerance) {
-            stopMoving(actor, flexibleMovementComponent);
+        if (position.distance(adjustedMoveTarget) <= component.targetTolerance) {
+            stopMoving(actor, component);
             return BehaviorState.SUCCESS;
         }
 
-        flexibleMovementComponent.sequenceNumber++;
+        component.sequenceNumber++;
         MovementPlugin plugin = pluginSystem.getMovementPlugin(actor.getEntity());
         CharacterMoveInputEvent inputEvent = plugin.move(
                 actor.getEntity(),
                 adjustedMoveTarget,
-                flexibleMovementComponent.sequenceNumber,
-                // time.getGameDeltaInMs()
-                // (int) (INPUT_COOLDOWN_SECONDS * 1000.0f)
+                component.sequenceNumber,
                 (int) (actor.getDelta() * 1000.0f)
         );
 
         if (inputEvent == null) {
-            // this is ugly, but due to unknown idiosyncrasies in the engine character movement code, characters
-            // sometimes sink into solid blocks below them. This causes reachability checks to fail intermittently,
-            // especially when characters stop moving. In an ideal world, we'd exit failure here to indicate our
-            // path is no longer valid. However, we instead fall back to a default movement plugin in the hopes
-            // that a gentle nudge in a probably-correct direction will at least make the physics reconcile the
-            // intersection, and hopefully return to properly penetrable blocks.
-            logger.debug("Movement plugin returned null");
-//            MovementPlugin fallbackPlugin = new WalkingMovementPlugin(world, time);
-//            inputEvent = fallbackPlugin.move(
-//                    actor.getEntity(),
-//                    adjustedMoveTarget,
-//                    flexibleMovementComponent.sequenceNumber
-//            );
-            stopMoving(actor, flexibleMovementComponent);
-            return BehaviorState.FAILURE;
+            float now = time.getGameTime();
+            if (component.lastCantMoveTime == 0) {
+                component.lastCantMoveTime = now;
+            }
+
+            if (component.lastInputEvent == null || component.lastCantMoveTime - now > component.cantMoveToleranceSeconds) {
+                stopMoving(actor, component);
+                return BehaviorState.FAILURE;
+            }
+
+            actor.getEntity().send(component.lastInputEvent);
+            actor.save(component);
+            return BehaviorState.RUNNING;
         }
 
         actor.getEntity().send(inputEvent);
-        flexibleMovementComponent.lastInput = time.getGameTimeInMs();
-        flexibleMovementComponent.collidedHorizontally = false;
-        actor.save(flexibleMovementComponent);
+        component.lastCantMoveTime = 0;
+        component.lastInputTimeSeconds = time.getGameTimeInMs();
+        component.collidedHorizontally = false;
+        component.lastInputEvent = inputEvent;
+        actor.save(component);
         return BehaviorState.RUNNING;
     }
 
     private void stopMoving(Actor actor, FlexibleMovementComponent flexibleMovementComponent) {
         actor.getEntity().send(new CharacterMoveInputEvent(flexibleMovementComponent.sequenceNumber++, 0f, 0f, org.terasology.math.geom.Vector3f.zero(), false, false, false, (int) (actor.getDelta() * 1000.0f)));
+        flexibleMovementComponent.lastInputEvent = null;
+        flexibleMovementComponent.lastCantMoveTime = 0;
         actor.getEntity().saveComponent(flexibleMovementComponent);
     }
 }

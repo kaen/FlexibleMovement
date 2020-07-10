@@ -260,6 +260,15 @@ public class FlexibleMovementMTETest extends FlexibleMovementTestingEnvironment 
             });
         }
 
+        @Test
+        public void jumpPillars() throws InterruptedException {
+            runTest(new String[]{
+                    " X X | X X |XXXXX|XXXXX|XXXXX"
+            }, new String[]{
+                    "     |     |?   !|     |     "
+            });
+        }
+
         private void runTest(String[] world, String[] path) {
             executeExample(world, path, "walking", "leaping");
         }

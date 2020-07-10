@@ -49,6 +49,6 @@ public class LeapingMovementPlugin extends MovementPlugin {
         float yaw = getYaw(delta);
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false,true, deltaMs);
+        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false, delta.y > 0, deltaMs);
     }
 }
