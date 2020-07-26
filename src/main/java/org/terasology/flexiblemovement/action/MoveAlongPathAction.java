@@ -20,6 +20,10 @@ import org.terasology.logic.behavior.BehaviorAction;
 import org.terasology.logic.behavior.core.Actor;
 import org.terasology.logic.behavior.core.BaseAction;
 import org.terasology.logic.behavior.core.BehaviorState;
+import org.terasology.logic.characters.CharacterMoveInputEvent;
+import org.terasology.logic.location.LocationComponent;
+import org.terasology.math.geom.Vector3f;
+import org.terasology.math.geom.Vector3i;
 
 /**
  * Performs a child node along the FlexibleMovementComponent.path
@@ -36,7 +40,13 @@ public class MoveAlongPathAction extends BaseAction {
     @Override
     public BehaviorState modify(Actor actor, BehaviorState childResult) {
         FlexibleMovementComponent movement = actor.getComponent(FlexibleMovementComponent.class);
+        LocationComponent location = actor.getComponent(LocationComponent.class);
         BehaviorState result = BehaviorState.RUNNING;
+
+        if (movement.getPath() == null) {
+            return BehaviorState.FAILURE;
+        }
+
         if (childResult == BehaviorState.SUCCESS) {
             movement.advancePath();
             if (movement.isPathFinished()) {
@@ -49,6 +59,10 @@ public class MoveAlongPathAction extends BaseAction {
         }
 
         actor.save(movement);
+        if (result != BehaviorState.RUNNING) {
+            // stop moving if we're done with the path
+            actor.getEntity().send(new CharacterMoveInputEvent(movement.sequenceNumber++, 0f, 0f, new Vector3f(0, 0, 0), false, false, false, (long) (actor.getDelta() * 1000)));
+        }
 
         return result;
     }

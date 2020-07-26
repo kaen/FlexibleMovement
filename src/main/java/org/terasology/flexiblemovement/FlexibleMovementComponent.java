@@ -35,7 +35,7 @@ public final class FlexibleMovementComponent implements Component {
     // immediate movement target
     @Replicate
     // TODO if this is vector3f it can be viewed in debugger
-    public Vector3i target = Vector3i.zero();
+    public Vector3i target = null;
 
     /**
      * The maximum distance from a target before it is considered to be reached
@@ -50,7 +50,7 @@ public final class FlexibleMovementComponent implements Component {
      */
     @Replicate
     @Range(max = 100.0f)
-    public float cantMoveToleranceSeconds = 0.5f;
+    public float cantMoveToleranceSeconds = 0.1f;
 
     /**
      * The game time (in seconds) when this entity started being unable to move to its target. 0 means "never"
@@ -58,6 +58,16 @@ public final class FlexibleMovementComponent implements Component {
     @Replicate
     @TextField
     public float lastCantMoveTime = 0f;
+
+    /**
+     * While jumping or performing other fast, complex movements we sometimes skip ahead by a few steps on the path.
+     * Since we're still technically moving along the path we allow movement to continue as long as we don't move more
+     * this many steps. If this number is too high entities will spend a lot of time checking before finally agreeing
+     * they've failed to move along the path.
+     */
+    @Replicate
+    @TextField
+    public int pathSkippingLookahead = 3;
 
     public CharacterMoveInputEvent lastInputEvent = null;
 

@@ -46,6 +46,11 @@ public class WalkingMovementPlugin extends MovementPlugin {
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence, long deltaMs) {
         Vector3f delta = getDelta(entity, dest);
+
+        // walking is horizontal-only
+        delta.y = 0;
+        delta.normalize();
+
         float yaw = getYaw(delta);
 
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);

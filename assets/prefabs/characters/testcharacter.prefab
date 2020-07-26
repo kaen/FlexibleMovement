@@ -2,7 +2,6 @@
   "FlexibleMovement": {
     "movementTypes": ["walking", "leaping"]
   },
-  "NameTag": { "text": "testcharacter" },
   "Behavior" : {
     "tree" : "reliableMoveTo"
   },

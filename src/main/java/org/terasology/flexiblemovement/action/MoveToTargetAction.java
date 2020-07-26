@@ -65,28 +65,36 @@ public class MoveToTargetAction extends BaseAction {
         LocationComponent location = actor.getComponent(LocationComponent.class);
         FlexibleMovementComponent component = actor.getComponent(FlexibleMovementComponent.class);
 
-        if (component == null) {
+        if (component == null || component.target == null) {
             return BehaviorState.FAILURE;
         }
 
-        // we need to translate the movement target to an expected real world position
-        // in practice we just need to adjust the Y so that it's resting on top of the block at the right height
-        Vector3f adjustedMoveTarget = component.target.toVector3f();
-
-        Vector3f position = location.getWorldPosition();
-        if (position.distance(adjustedMoveTarget) <= component.targetTolerance) {
-            stopMoving(actor, component);
-            return BehaviorState.SUCCESS;
-        }
-
+        // TODO: some times we skip a few steps in the path (while jumping).
+        // TODO: Technically MoveTo shouldn't know about path
         component.sequenceNumber++;
+        int skippedTargets = 0;
+        int stepsLeft = component.getPath().size() - component.getPathIndex();
+        CharacterMoveInputEvent inputEvent = null;
         MovementPlugin plugin = pluginSystem.getMovementPlugin(actor.getEntity());
-        CharacterMoveInputEvent inputEvent = plugin.move(
-                actor.getEntity(),
-                adjustedMoveTarget,
-                component.sequenceNumber,
-                (int) (actor.getDelta() * 1000.0f)
-        );
+        for (int i = 0; inputEvent == null && i < stepsLeft && i <= component.pathSkippingLookahead; i++) {
+            Vector3f target = component.getPath().get(component.getPathIndex() + i).toVector3f();
+            if (location.getWorldPosition().distance(target) <= component.targetTolerance) {
+                skippedTargets = i;
+            }
+
+            Vector3f position = location.getWorldPosition();
+            if (position.distance(target) <= component.targetTolerance) {
+                stopMoving(actor, component);
+                return BehaviorState.SUCCESS;
+            }
+
+            inputEvent = plugin.move(
+                    actor.getEntity(),
+                    target,
+                    component.sequenceNumber,
+                    (int) (actor.getDelta() * 1000.0f)
+            );
+        }
 
         if (inputEvent == null) {
             float now = time.getGameTime();
@@ -105,12 +113,15 @@ public class MoveToTargetAction extends BaseAction {
         }
 
         actor.getEntity().send(inputEvent);
+        // logger.warn("{} {}ms", inputEvent.getMovementDirection(), inputEvent.getDeltaMs());
         component.lastCantMoveTime = 0;
         component.lastInputTimeSeconds = time.getGameTimeInMs();
         component.collidedHorizontally = false;
         component.lastInputEvent = inputEvent;
         actor.save(component);
-        return BehaviorState.RUNNING;
+
+        // when we've skipped ahead in the path we need to  return SUCCESS to let the parent node know to advance
+        return skippedTargets > 0 ? BehaviorState.SUCCESS : BehaviorState.RUNNING;
     }
 
     private void stopMoving(Actor actor, FlexibleMovementComponent flexibleMovementComponent) {

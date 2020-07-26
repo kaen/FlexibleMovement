@@ -46,9 +46,14 @@ public class LeapingMovementPlugin extends MovementPlugin {
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence, long deltaMs) {
         Vector3f delta = getDelta(entity, dest);
-        float yaw = getYaw(delta);
+        boolean jump = delta.y > 0;
 
+        // we're airborne so all of our delta should be horizontal as we have no vertical control
+        delta.y = 0;
+        delta.normalize();
+
+        float yaw = getYaw(delta);
         CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
-        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false, delta.y > 0, deltaMs);
+        return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false, jump, deltaMs);
     }
 }

@@ -15,6 +15,7 @@
  */
 package org.terasology.flexiblemovement;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.junit.Rule;
 import org.junit.rules.Timeout;
@@ -40,6 +41,8 @@ import org.terasology.world.WorldProvider;
 import org.terasology.world.block.Block;
 import org.terasology.world.block.BlockManager;
 
+import java.math.RoundingMode;
+import java.util.List;
 import java.util.Set;
 import java.util.Timer;
 
@@ -151,11 +154,19 @@ public class FlexibleMovementTestingEnvironment {
 
         helper.runUntil(()-> FlexibleMovementHelper.posToBlock(entity.getComponent(LocationComponent.class).getWorldPosition()).distance(start) == 0);
 
+        List<Vector3i> traveledPath = Lists.newArrayList();
+        final Vector3f lastPosition = new Vector3f(entity.getComponent(LocationComponent.class).getWorldPosition());
         float delta = 0.5f;
         boolean timedOut = helper.runWhile(timeoutMs, ()-> {
             Vector3f pos = entity.getComponent(LocationComponent.class).getWorldPosition();
+            Vector3i block = new Vector3i(pos, RoundingMode.HALF_UP);
+            if (traveledPath.isEmpty() || !traveledPath.get(traveledPath.size() - 1).equals(block)) {
+                traveledPath.add(block);
+            }
             float distance = pos.distance(stop.toVector3f());
             logger.warn("distance: {}, pos: {}", distance, pos);
+            logger.warn("last movement: {}", new Vector3f(pos).sub(lastPosition));
+            lastPosition.set(pos);
             return distance > delta;
         });
 
@@ -165,6 +176,7 @@ public class FlexibleMovementTestingEnvironment {
         entity.destroy();
 
         logger.debug("Goal was {}, distance {}", stop, distance);
+        logger.debug("Path traveled: {}", traveledPath);
         assertEquals(0f, distance, delta);
         assertFalse(timedOut);
     }

@@ -7,13 +7,18 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.terasology.moduletestingenvironment.MTEExtension;
+import org.terasology.moduletestingenvironment.ModuleTestingHelper;
 import org.terasology.moduletestingenvironment.extension.Dependencies;
 import org.terasology.moduletestingenvironment.extension.UseWorldGenerator;
+import org.terasology.registry.In;
 
 @ExtendWith(MTEExtension.class)
 @Dependencies("FlexibleMovement")
 @UseWorldGenerator("ModuleTestingEnvironment:dummy")
 public class FlexibleMovementMTETest extends FlexibleMovementTestingEnvironment {
+    @In
+    ModuleTestingHelper helper;
+
     @Nested
     class FlyingMovementTest extends FlexibleMovementTestingEnvironment {
         @Test
@@ -263,9 +268,9 @@ public class FlexibleMovementMTETest extends FlexibleMovementTestingEnvironment 
         @Test
         public void jumpPillars() throws InterruptedException {
             runTest(new String[]{
-                    " X X | X X |XXXXX|XXXXX|XXXXX"
+                    "    X X X |    X X X |XXXXXXXXXX|XXXXXXXXXX|XXXXXXXXXX"
             }, new String[]{
-                    "     |     |?   !|     |     "
+                    "          |          |?        !|          |          "
             });
         }
 
