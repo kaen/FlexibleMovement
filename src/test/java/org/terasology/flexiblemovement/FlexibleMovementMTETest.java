@@ -160,7 +160,7 @@ public class FlexibleMovementMTETest extends FlexibleMovementTestingEnvironment 
         @Test
         public void simpleLeap() throws InterruptedException {
             runTest(new String[]{
-                    "~  |   ",
+                    "~  |X  ",
                     "~  |XXX"
             }, new String[]{
                     "?  |   ",
@@ -261,7 +261,7 @@ public class FlexibleMovementMTETest extends FlexibleMovementTestingEnvironment 
             runTest(new String[]{
                     "X X|XXX|XXX|XXX"
             }, new String[]{
-                    "? !|123|   |   "
+                    "? !| 1 |   |   "
             });
         }
 
