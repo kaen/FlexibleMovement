@@ -69,6 +69,7 @@ public class FlexibleMovementTestingEnvironment {
         Block air = helper.getHostContext().get(BlockManager.class).getBlock("engine:air");
         Block dirt = helper.getHostContext().get(BlockManager.class).getBlock("coreassets:dirt");
         Block water = helper.getHostContext().get(BlockManager.class).getBlock("coreassets:water");
+        Block ladder = helper.getHostContext().get(BlockManager.class).getBlock("coreassets:ladder.front");
 
         Region3i extents = getPaddedExtents(world, airHeight);
 
@@ -97,6 +98,10 @@ public class FlexibleMovementTestingEnvironment {
                         break;
                     case '~':
                         worldProvider.setBlock(new Vector3i(x, y, z), water);
+                        x += 1;
+                        break;
+                    case 'H':
+                        worldProvider.setBlock(new Vector3i(x, y, z), ladder);
                         x += 1;
                         break;
                     case '|':

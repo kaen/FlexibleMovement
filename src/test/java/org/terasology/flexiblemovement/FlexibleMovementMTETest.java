@@ -274,8 +274,18 @@ public class FlexibleMovementMTETest extends FlexibleMovementTestingEnvironment 
             });
         }
 
+        @Test
+        public void simpleClimb() throws InterruptedException {
+            helper.setSafetyTimeoutMs(60 * 60 * 24 * 1000);
+            runTest(new String[]{
+                    "XXH  HX|XXH  HX|XXXXXXX"
+            }, new String[]{
+                    "?12   !|  3  8 |  4567 "
+            });
+        }
+
         private void runTest(String[] world, String[] path) {
-            executeExample(world, path, "walking", "leaping");
+            executeExample(world, path, "walking", "leaping", "climbing");
         }
     }
 }

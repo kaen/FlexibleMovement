@@ -66,6 +66,10 @@ public abstract class MovementPlugin {
         return ((float) Math.atan2(delta.x, delta.z)) * TeraMath.RAD_TO_DEG + 180.0f;
     }
 
+    public float getPitch(Vector3f delta) {
+        return ((float) Math.atan(delta.y)) * TeraMath.RAD_TO_DEG;
+    }
+
     public Vector3f getDelta(EntityRef entity, Vector3f dest) {
         if (getTime().getGameDelta() == 0.0f) {
             return Vector3f.zero();

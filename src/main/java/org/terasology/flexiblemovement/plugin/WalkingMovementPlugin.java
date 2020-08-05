@@ -27,8 +27,13 @@ import org.terasology.logic.characters.MovementMode;
 import org.terasology.logic.characters.events.SetMovementModeEvent;
 import org.terasology.logic.location.LocationComponent;
 import org.terasology.math.TeraMath;
+import org.terasology.math.geom.Quat4f;
 import org.terasology.math.geom.Vector3f;
+import org.terasology.math.geom.Vector3i;
 import org.terasology.world.WorldProvider;
+import org.terasology.world.block.Block;
+
+import java.math.RoundingMode;
 
 public class WalkingMovementPlugin extends MovementPlugin {
     public WalkingMovementPlugin(WorldProvider world, Time time) {
@@ -41,19 +46,30 @@ public class WalkingMovementPlugin extends MovementPlugin {
     @Override
     public JPSPlugin getJpsPlugin(EntityRef entity) {
         CharacterMovementComponent component = entity.getComponent(CharacterMovementComponent.class);
-        return new WalkingPlugin(getWorld(), component.radius * 2.0f, component.height);    }
+        return new WalkingPlugin(getWorld(), component.radius * 2.0f, component.height);
+    }
 
     @Override
     public CharacterMoveInputEvent move(EntityRef entity, Vector3f dest, int sequence, long deltaMs) {
+        CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         Vector3f delta = getDelta(entity, dest);
+        float yaw = getYaw(delta);
 
         // walking is horizontal-only
         delta.y = 0;
         delta.normalize();
 
-        float yaw = getYaw(delta);
+        // In the climbing state movement is relative to the direction of the ladder
+        if (movement.mode == MovementMode.CLIMBING) {
+            Vector3i pos = new Vector3i(entity.getComponent(LocationComponent.class).getWorldPosition(), RoundingMode.HALF_UP);
+            Block block = getWorld().getBlock(pos);
+            Vector3f ladderDirection = block.getDirection().toDirection().getVector3f();
+            Quat4f rotation = new Quat4f(delta, 0);
+            rotation.inverse();
+            rotation.rotate(delta);
+            yaw = rotation.getYaw() * TeraMath.RAD_TO_DEG;
+        }
 
-        CharacterMovementComponent movement = entity.getComponent(CharacterMovementComponent.class);
         return new CharacterMoveInputEvent(sequence, 0, yaw, delta, false, false, false, deltaMs);
     }
 }
